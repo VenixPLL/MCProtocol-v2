@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import me.dickmeister.mcprotocol.network.PacketDirection;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 public class ProtocolStateEntry {
 
     private final PacketRegistry registry;
 
-    private final Map<Integer, Packet> CLIENT = Collections.synchronizedMap(new HashMap<>());
-    private final Map<Integer, Packet> SERVER = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Integer, Packet> CLIENT = new ConcurrentHashMap<>();
+    private final Map<Integer, Packet> SERVER = new ConcurrentHashMap<>();
 
     /**
      * Getting a new packet instance

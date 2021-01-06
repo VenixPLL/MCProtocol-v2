@@ -9,11 +9,12 @@ import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 public class PacketRegistry {
 
-    private final Map<ConnectionState, ProtocolStateEntry> protocolEntries = Collections.synchronizedMap(new HashMap<>());
+    private final Map<ConnectionState, ProtocolStateEntry> protocolEntries = new ConcurrentHashMap<>();
     /**
      * Override for that one packet that is in Handshake State;
      * There is no sense to make a full ProtocolStateEntry for one Packet
