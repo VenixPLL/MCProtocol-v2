@@ -15,14 +15,14 @@ import net.md_5.bungee.chat.ComponentSerializer;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND,connectionState = ConnectionState.LOGIN)
+@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND, connectionState = ConnectionState.LOGIN)
 public class ServerLoginDisconnectPacket extends Packet {
+
+    private BaseComponent[] reason;
 
     {
         this.setId(0x00);
     }
-
-    private BaseComponent[] reason;
 
     public ServerLoginDisconnectPacket(@NotNull final String message) {
         reason = new BaseComponent[]{new TextComponent(message)};

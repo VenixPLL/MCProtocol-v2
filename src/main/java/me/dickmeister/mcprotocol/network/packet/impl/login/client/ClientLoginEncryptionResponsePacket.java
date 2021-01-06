@@ -1,6 +1,5 @@
 package me.dickmeister.mcprotocol.network.packet.impl.login.client;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.network.ConnectionState;
@@ -16,15 +15,15 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.LOGIN,packetDirection = PacketDirection.SERVERBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.LOGIN, packetDirection = PacketDirection.SERVERBOUND)
 public class ClientLoginEncryptionResponsePacket extends Packet {
+
+    private byte[] secretKeyEncrypted = new byte[0];
+    private byte[] verifyTokenEncrypted = new byte[0];
 
     {
         this.setId(0x01);
     }
-
-    private byte[] secretKeyEncrypted = new byte[0];
-    private byte[] verifyTokenEncrypted = new byte[0];
 
     public ClientLoginEncryptionResponsePacket(final SecretKey secretKey, final PublicKey publicKey, final byte[] verifyToken) {
         secretKeyEncrypted = CryptManager.encryptData(publicKey, secretKey.getEncoded());

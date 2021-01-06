@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-public class NettyCompressionCodec extends ByteToMessageCodec<ByteBuf>
-{
+public class NettyCompressionCodec extends ByteToMessageCodec<ByteBuf> {
     private final byte[] buffer = new byte[8192];
     private final Deflater deflater;
     private final Inflater inflater;
@@ -29,7 +28,7 @@ public class NettyCompressionCodec extends ByteToMessageCodec<ByteBuf>
         final int readable = in.readableBytes();
         final PacketBuffer output = new PacketBuffer(out);
 
-        if(readable < threshold) {
+        if (readable < threshold) {
             output.writeVarIntToBuffer(0);
             out.writeBytes(in);
             return;
@@ -41,9 +40,9 @@ public class NettyCompressionCodec extends ByteToMessageCodec<ByteBuf>
 
         deflater.setInput(bytes, 0, readable);
         deflater.finish();
-        while(!deflater.finished()) {
+        while (!deflater.finished()) {
             final int length = deflater.deflate(buffer);
-            output.writeBytes(buffer,length);
+            output.writeBytes(buffer, length);
         }
         deflater.reset();
     }
@@ -53,15 +52,15 @@ public class NettyCompressionCodec extends ByteToMessageCodec<ByteBuf>
         if (buf.readableBytes() != 0) {
             final PacketBuffer in = new PacketBuffer(buf);
             final int size = in.readVarIntFromBuffer();
-            if(size == 0) {
+            if (size == 0) {
                 out.add(buf.readBytes(buf.readableBytes()));
                 return;
             }
 
-            if(size < threshold)
+            if (size < threshold)
                 throw new DecoderException("Badly compressed packet: size of " + size + " is below threshold of " + threshold + ".");
 
-            if(size > 2097152)
+            if (size > 2097152)
                 throw new DecoderException("Badly compressed packet: size of " + size + " is larger than protocol maximum of " + 2097152 + ".");
 
             final byte[] bytes = new byte[buf.readableBytes()];

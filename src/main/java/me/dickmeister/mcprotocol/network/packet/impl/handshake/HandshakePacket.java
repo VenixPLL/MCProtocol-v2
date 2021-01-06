@@ -10,18 +10,18 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.HANDSHAKE,packetDirection = PacketDirection.SERVERBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.HANDSHAKE, packetDirection = PacketDirection.SERVERBOUND)
 @ToString
 public class HandshakePacket extends Packet {
-
-    {
-        this.setId(0x00);
-    }
 
     private int protocolVersion;
     private String host;
     private int port;
     private int nextState;
+
+    {
+        this.setId(0x00);
+    }
 
     @Override
     public void read(PacketBuffer buffer) throws Exception {

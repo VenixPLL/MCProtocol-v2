@@ -7,8 +7,7 @@ import lombok.NonNull;
 import javax.crypto.Cipher;
 import javax.crypto.ShortBufferException;
 
-public class NettyEncryptionTranslator
-{
+public class NettyEncryptionTranslator {
     private final Cipher cipher;
     private byte[] decode = new byte[0];
     private byte[] encode = new byte[0];

@@ -25,16 +25,14 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND,connectionState = ConnectionState.STATUS)
-public class ServerStatusResponsePacket extends Packet
-{
+@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND, connectionState = ConnectionState.STATUS)
+public class ServerStatusResponsePacket extends Packet {
+    private static final Gson gson = new GsonBuilder().create();
+    private ServerStatusInfo statusInfo;
+
     {
         this.setId(0x00);
     }
-
-    private static final Gson gson = new GsonBuilder().create();
-
-    private ServerStatusInfo statusInfo;
 
     @Override
     public void write(PacketBuffer packetBuffer) {

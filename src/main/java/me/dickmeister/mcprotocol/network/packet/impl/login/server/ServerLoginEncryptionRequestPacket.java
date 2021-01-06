@@ -14,16 +14,16 @@ import java.security.PublicKey;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.LOGIN,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.LOGIN, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerLoginEncryptionRequestPacket extends Packet {
-
-    {
-        this.setId(0x01);
-    }
 
     private String hashedServerId;
     private PublicKey publicKey;
     private byte[] verifyToken;
+
+    {
+        this.setId(0x01);
+    }
 
     @Override
     public void write(PacketBuffer out) throws Exception {

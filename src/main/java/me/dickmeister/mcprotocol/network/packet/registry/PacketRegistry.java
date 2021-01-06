@@ -13,20 +13,19 @@ import java.util.stream.Stream;
 
 public class PacketRegistry {
 
+    private final Map<ConnectionState, ProtocolStateEntry> protocolEntries = Collections.synchronizedMap(new HashMap<>());
     /**
      * Override for that one packet that is in Handshake State;
      * There is no sense to make a full ProtocolStateEntry for one Packet
      */
     private HandshakePacket handshakePacket;
 
-    private final Map<ConnectionState, ProtocolStateEntry> protocolEntries = Collections.synchronizedMap(new HashMap<>());
-
     /**
      *  Registering default Packets.
      *  States that does not change between versions are HANDSHAKE,STATUS,LOGIN
      */ {
         this.reflectionsRegister("me.dickmeister.mcprotocol.network.packet.impl"
-                ,ConnectionState.HANDSHAKE, ConnectionState.STATUS, ConnectionState.LOGIN, ConnectionState.PLAY);
+                , ConnectionState.HANDSHAKE, ConnectionState.STATUS, ConnectionState.LOGIN, ConnectionState.PLAY);
 
         if (MCProtocol.DEBUG) System.out.println("Registered " + protocolEntries.size() + " Protocols");
 
@@ -72,9 +71,9 @@ public class PacketRegistry {
      * Find all packets of specified ConnectionState and register them.
      *
      * @param lookUpPath Path to lookUp for classes
-     * @param states ConnectionState's of packets you want to register.
+     * @param states     ConnectionState's of packets you want to register.
      */
-    public final void reflectionsRegister(final String lookUpPath,final ConnectionState... states) {
+    public final void reflectionsRegister(final String lookUpPath, final ConnectionState... states) {
         final Set<Class<?>> classes = getPacketClasses(lookUpPath);
 
         classes.forEach(c -> {
@@ -100,7 +99,7 @@ public class PacketRegistry {
                 }
 
             } catch (final Exception exc) {
-                if (MCProtocol.DEBUG){
+                if (MCProtocol.DEBUG) {
                     System.err.println("Failed to load packet - " + c.getSimpleName());
                     exc.printStackTrace();
                 }
@@ -124,8 +123,8 @@ public class PacketRegistry {
     }
 
     /**
-     * @return Returns a Set of Packet classes annotated with PacketInfo
      * @param lookUpPath Path to lookUp for classes
+     * @return Returns a Set of Packet classes annotated with PacketInfo
      */
     private Set<Class<?>> getPacketClasses(final String lookUpPath) {
         return new Reflections(lookUpPath)

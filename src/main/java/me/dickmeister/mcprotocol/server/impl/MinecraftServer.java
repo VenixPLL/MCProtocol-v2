@@ -11,7 +11,8 @@ import me.dickmeister.mcprotocol.server.ServerBase;
  */
 public class MinecraftServer extends ServerBase {
 
-    @Setter @Getter
+    @Setter
+    @Getter
     private SessionListener sessionListener;
 
     public MinecraftServer(PacketRegistry packetRegistry) {
@@ -20,7 +21,7 @@ public class MinecraftServer extends ServerBase {
 
 
     @Override
-    public void bind(int port,final SessionListener listener) {
+    public void bind(int port, final SessionListener listener) {
         this.sessionListener = listener;
         super.bind(port, sessionListener);
 

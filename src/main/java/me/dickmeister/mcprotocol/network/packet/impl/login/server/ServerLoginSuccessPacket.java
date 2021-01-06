@@ -13,15 +13,15 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.LOGIN,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.LOGIN, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerLoginSuccessPacket extends Packet {
+
+    private UUID uuid;
+    private String username;
 
     {
         this.setId(0x02);
     }
-
-    private UUID uuid;
-    private String username;
 
     @Override
     public void read(PacketBuffer buffer) throws Exception {

@@ -10,8 +10,7 @@ import lombok.Data;
 /**
  * Skided long time ago from idk, probably MCProtocolLib
  */
-public class VersionInfo
-{
+public class VersionInfo {
     private String name;
     private int protocol;
 }

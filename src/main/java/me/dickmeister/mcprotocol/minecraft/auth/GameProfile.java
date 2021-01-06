@@ -4,6 +4,7 @@ import com.mojang.authlib.properties.PropertyMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
 /**
@@ -12,10 +13,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameProfile
-{
+public class GameProfile {
+    private final PropertyMap properties = new PropertyMap();
     private String username;
     private UUID uuid;
-
-    private final PropertyMap properties = new PropertyMap();
 }

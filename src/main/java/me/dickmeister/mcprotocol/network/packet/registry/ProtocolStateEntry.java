@@ -1,7 +1,6 @@
 package me.dickmeister.mcprotocol.network.packet.registry;
 
 import lombok.RequiredArgsConstructor;
-import me.dickmeister.mcprotocol.network.ConnectionState;
 import me.dickmeister.mcprotocol.network.PacketDirection;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 

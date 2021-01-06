@@ -21,7 +21,6 @@ import me.dickmeister.mcprotocol.network.netty.codec.NettyVarInt21FrameCodec;
 import me.dickmeister.mcprotocol.network.objects.Session;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
-import me.dickmeister.mcprotocol.util.LazyLoadBase;
 import me.dickmeister.mcprotocol.util.LogUtil;
 
 import java.util.List;
@@ -30,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 
 @RequiredArgsConstructor
-public abstract class ServerBase implements IServer{
+public abstract class ServerBase implements IServer {
 
     @Getter
     private final PacketRegistry packetRegistry;
@@ -50,29 +49,31 @@ public abstract class ServerBase implements IServer{
     private ChannelFuture channelFuture;
 
     @Override
-    public void bind(int port,final SessionListener sessionListener) {
+    public void bind(int port, final SessionListener sessionListener) {
         try {
 
             this.eventExecutors = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
-            Executors.newSingleThreadExecutor().submit(() -> this.run(port,sessionListener));
+            Executors.newSingleThreadExecutor().submit(() -> this.run(port, sessionListener));
             this.countDownLatch.await();
 
 
         } catch (final Throwable t) {
-            LogUtil.err(this.getClass(),"Failed to start server during initialization!");
-            if(MCProtocol.DEBUG) t.printStackTrace();
+            LogUtil.err(this.getClass(), "Failed to start server during initialization!");
+            if (MCProtocol.DEBUG) t.printStackTrace();
         }
     }
 
     @Override
     public void close(boolean fast) {
-        if(!fast){
+        if (!fast) {
             sessionList.forEach(session -> session.getChannel().close());
             return;
         }
 
         this.channelFuture.channel().close();
-        if(Objects.nonNull(this.eventExecutors)) this.eventExecutors.shutdownNow();
+
+        if (Objects.isNull(this.eventExecutors)) return;
+        this.eventExecutors.shutdownNow();
     }
 
     /**
@@ -88,12 +89,12 @@ public abstract class ServerBase implements IServer{
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(final SocketChannel socketChannel){
+                    protected void initChannel(final SocketChannel socketChannel) {
                         final ChannelPipeline pipeline = socketChannel.pipeline();
 
                         pipeline.addLast("timer", new ReadTimeoutHandler(30));
                         pipeline.addLast("frameCodec", new NettyVarInt21FrameCodec());
-                        pipeline.addLast("packetCodec", new NettyPacketCodec(PacketDirection.SERVERBOUND,packetRegistry, ConnectionState.HANDSHAKE));
+                        pipeline.addLast("packetCodec", new NettyPacketCodec(PacketDirection.SERVERBOUND, packetRegistry, ConnectionState.HANDSHAKE));
 
                         pipeline.addLast("handler", new SimpleChannelInboundHandler<Packet>() {
 
@@ -122,13 +123,13 @@ public abstract class ServerBase implements IServer{
                         });
                     }
                 }).bind(port).addListener((ChannelFutureListener) channelFuture -> {
-            if (channelFuture.isSuccess()) {
-                LogUtil.log(this.getClass(),"Server is now running on %s",channelFuture.channel().localAddress());
-            }else{
-                LogUtil.err(this.getClass(),"Server failed to start!");
-            }
+                    if (channelFuture.isSuccess()) {
+                        LogUtil.log(this.getClass(), "Server is now running on %s", channelFuture.channel().localAddress());
+                    } else {
+                        LogUtil.err(this.getClass(), "Server failed to start!");
+                    }
 
-            this.countDownLatch.countDown();
-        });
+                    this.countDownLatch.countDown();
+                });
     }
 }

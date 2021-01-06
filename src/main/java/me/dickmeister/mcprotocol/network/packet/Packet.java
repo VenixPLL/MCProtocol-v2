@@ -20,6 +20,7 @@ public abstract class Packet {
 
     /**
      * Reading from packet.
+     *
      * @param buffer PacketBuffer to read from
      * @throws Exception
      */
@@ -27,6 +28,7 @@ public abstract class Packet {
 
     /**
      * Writing to packet.
+     *
      * @param buffer PacketBuffer to write to
      * @throws Exception
      */
@@ -36,6 +38,7 @@ public abstract class Packet {
     @Target(ElementType.TYPE)
     public @interface PacketInfo {
         ConnectionState connectionState();
+
         PacketDirection packetDirection();
     }
 }

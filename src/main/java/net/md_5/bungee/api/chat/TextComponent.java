@@ -1,15 +1,15 @@
 package net.md_5.bungee.api.chat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import me.dickmeister.mcprotocol.util.StringUtil;
 import net.md_5.bungee.api.ChatColor;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Getter
 @Setter
@@ -17,6 +17,43 @@ import net.md_5.bungee.api.ChatColor;
 public final class TextComponent extends BaseComponent {
 
     private static final Pattern url = Pattern.compile("^(?:(https?)://)?([-\\w_\\.]{2,}\\.[a-z]{2,4})(/\\S*)?$");
+    /**
+     * The text of the component that will be displayed to the client
+     */
+    private String text;
+
+    public TextComponent(final String text) {
+        this.text = StringUtil.fixColor(text);
+    }
+
+    /**
+     * Creates a TextComponent with blank text.
+     */
+    public TextComponent() {
+        this.text = "";
+    }
+
+    /**
+     * Creates a TextComponent with formatting and text from the passed
+     * component
+     *
+     * @param textComponent the component to copy from
+     */
+    public TextComponent(TextComponent textComponent) {
+        super(textComponent);
+        setText(textComponent.getText());
+    }
+
+    /**
+     * Creates a TextComponent with blank text and the extras set to the passed
+     * array
+     *
+     * @param extras the extras to set
+     */
+    public TextComponent(BaseComponent... extras) {
+        setText("");
+        setExtra(new ArrayList<>(Arrays.asList(extras)));
+    }
 
     /**
      * Converts the old formatting system that used
@@ -124,44 +161,6 @@ public final class TextComponent extends BaseComponent {
         components.add(component);
 
         return components.toArray(new BaseComponent[0]);
-    }
-
-    /**
-     * The text of the component that will be displayed to the client
-     */
-    private String text;
-
-    public TextComponent(final String text) {
-        this.text = StringUtil.fixColor(text);
-    }
-
-    /**
-     * Creates a TextComponent with blank text.
-     */
-    public TextComponent() {
-        this.text = "";
-    }
-
-    /**
-     * Creates a TextComponent with formatting and text from the passed
-     * component
-     *
-     * @param textComponent the component to copy from
-     */
-    public TextComponent(TextComponent textComponent) {
-        super(textComponent);
-        setText(textComponent.getText());
-    }
-
-    /**
-     * Creates a TextComponent with blank text and the extras set to the passed
-     * array
-     *
-     * @param extras the extras to set
-     */
-    public TextComponent(BaseComponent... extras) {
-        setText("");
-        setExtra(new ArrayList<>(Arrays.asList(extras)));
     }
 
     /**

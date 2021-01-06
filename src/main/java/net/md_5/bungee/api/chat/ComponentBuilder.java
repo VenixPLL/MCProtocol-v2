@@ -1,9 +1,10 @@
 package net.md_5.bungee.api.chat;
 
 import com.google.common.base.Preconditions;
+import net.md_5.bungee.api.ChatColor;
+
 import java.util.ArrayList;
 import java.util.List;
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * <p>
@@ -23,11 +24,10 @@ import net.md_5.bungee.api.ChatColor;
  * part's formatting
  * </p>
  */
-public final class ComponentBuilder
-{
+public final class ComponentBuilder {
 
-    private BaseComponent current;
     private final List<BaseComponent> parts = new ArrayList<BaseComponent>();
+    private BaseComponent current;
 
     /**
      * Creates a ComponentBuilder from the other given ComponentBuilder to clone
@@ -35,12 +35,10 @@ public final class ComponentBuilder
      *
      * @param original the original for the new ComponentBuilder.
      */
-    public ComponentBuilder(ComponentBuilder original)
-    {
+    public ComponentBuilder(ComponentBuilder original) {
         current = original.current.duplicate();
-        for ( BaseComponent baseComponent : original.parts )
-        {
-            parts.add( baseComponent.duplicate() );
+        for (BaseComponent baseComponent : original.parts) {
+            parts.add(baseComponent.duplicate());
         }
     }
 
@@ -49,9 +47,8 @@ public final class ComponentBuilder
      *
      * @param text the first text element
      */
-    public ComponentBuilder(String text)
-    {
-        current = new TextComponent( text );
+    public ComponentBuilder(String text) {
+        current = new TextComponent(text);
     }
 
     /**
@@ -59,8 +56,7 @@ public final class ComponentBuilder
      *
      * @param component the first component element
      */
-    public ComponentBuilder(BaseComponent component)
-    {
+    public ComponentBuilder(BaseComponent component) {
         current = component.duplicate();
     }
 
@@ -72,9 +68,8 @@ public final class ComponentBuilder
      * @param component the component to append
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(BaseComponent component)
-    {
-        return append( component, FormatRetention.ALL );
+    public ComponentBuilder append(BaseComponent component) {
+        return append(component, FormatRetention.ALL);
     }
 
     /**
@@ -86,13 +81,12 @@ public final class ComponentBuilder
      * @param retention the formatting to retain
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(BaseComponent component, FormatRetention retention)
-    {
-        parts.add( current );
+    public ComponentBuilder append(BaseComponent component, FormatRetention retention) {
+        parts.add(current);
 
         BaseComponent previous = current;
         current = component.duplicate();
-        current.copyFormatting( previous, retention, false );
+        current.copyFormatting(previous, retention, false);
         return this;
     }
 
@@ -104,9 +98,8 @@ public final class ComponentBuilder
      * @param components the components to append
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(BaseComponent[] components)
-    {
-        return append( components, FormatRetention.ALL );
+    public ComponentBuilder append(BaseComponent[] components) {
+        return append(components, FormatRetention.ALL);
     }
 
     /**
@@ -115,20 +108,18 @@ public final class ComponentBuilder
      * retained from previous part.
      *
      * @param components the components to append
-     * @param retention the formatting to retain
+     * @param retention  the formatting to retain
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(BaseComponent[] components, FormatRetention retention)
-    {
-        Preconditions.checkArgument( components.length != 0, "No components to append" );
+    public ComponentBuilder append(BaseComponent[] components, FormatRetention retention) {
+        Preconditions.checkArgument(components.length != 0, "No components to append");
 
         BaseComponent previous = current;
-        for ( BaseComponent component : components )
-        {
-            parts.add( current );
+        for (BaseComponent component : components) {
+            parts.add(current);
 
             current = component.duplicate();
-            current.copyFormatting( previous, retention, false );
+            current.copyFormatting(previous, retention, false);
         }
 
         return this;
@@ -141,9 +132,8 @@ public final class ComponentBuilder
      * @param text the text to append
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(String text)
-    {
-        return append( text, FormatRetention.ALL );
+    public ComponentBuilder append(String text) {
+        return append(text, FormatRetention.ALL);
     }
 
     /**
@@ -154,9 +144,8 @@ public final class ComponentBuilder
      * @param text the text to append
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder appendLegacy(String text)
-    {
-        return append( TextComponent.fromLegacyText( text ) );
+    public ComponentBuilder appendLegacy(String text) {
+        return append(TextComponent.fromLegacyText(text));
     }
 
     /**
@@ -164,17 +153,16 @@ public final class ComponentBuilder
      * formatting. You can specify the amount of formatting retained from
      * previous part.
      *
-     * @param text the text to append
+     * @param text      the text to append
      * @param retention the formatting to retain
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(String text, FormatRetention retention)
-    {
-        parts.add( current );
+    public ComponentBuilder append(String text, FormatRetention retention) {
+        parts.add(current);
 
         BaseComponent old = current;
-        current = new TextComponent( text );
-        current.copyFormatting( old, retention, false );
+        current = new TextComponent(text);
+        current.copyFormatting(old, retention, false);
 
         return this;
     }
@@ -182,32 +170,30 @@ public final class ComponentBuilder
     /**
      * Allows joining additional components to this builder using the given
      * {@link Joiner} and {@link FormatRetention#ALL}.
-     *
+     * <p>
      * Simply executes the provided joiner on this instance to facilitate a
      * chain pattern.
      *
      * @param joiner joiner used for operation
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(Joiner joiner)
-    {
-        return joiner.join( this, FormatRetention.ALL );
+    public ComponentBuilder append(Joiner joiner) {
+        return joiner.join(this, FormatRetention.ALL);
     }
 
     /**
      * Allows joining additional components to this builder using the given
      * {@link Joiner}.
-     *
+     * <p>
      * Simply executes the provided joiner on this instance to facilitate a
      * chain pattern.
      *
-     * @param joiner joiner used for operation
+     * @param joiner    joiner used for operation
      * @param retention the formatting to retain
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder append(Joiner joiner, FormatRetention retention)
-    {
-        return joiner.join( this, retention );
+    public ComponentBuilder append(Joiner joiner, FormatRetention retention) {
+        return joiner.join(this, retention);
     }
 
     /**
@@ -216,9 +202,8 @@ public final class ComponentBuilder
      * @param color the new color
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder color(ChatColor color)
-    {
-        current.setColor( color );
+    public ComponentBuilder color(ChatColor color) {
+        current.setColor(color);
         return this;
     }
 
@@ -228,9 +213,8 @@ public final class ComponentBuilder
      * @param bold whether this part is bold
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder bold(boolean bold)
-    {
-        current.setBold( bold );
+    public ComponentBuilder bold(boolean bold) {
+        current.setBold(bold);
         return this;
     }
 
@@ -240,9 +224,8 @@ public final class ComponentBuilder
      * @param italic whether this part is italic
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder italic(boolean italic)
-    {
-        current.setItalic( italic );
+    public ComponentBuilder italic(boolean italic) {
+        current.setItalic(italic);
         return this;
     }
 
@@ -252,9 +235,8 @@ public final class ComponentBuilder
      * @param underlined whether this part is underlined
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder underlined(boolean underlined)
-    {
-        current.setUnderlined( underlined );
+    public ComponentBuilder underlined(boolean underlined) {
+        current.setUnderlined(underlined);
         return this;
     }
 
@@ -264,9 +246,8 @@ public final class ComponentBuilder
      * @param strikethrough whether this part is strikethrough
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder strikethrough(boolean strikethrough)
-    {
-        current.setStrikethrough( strikethrough );
+    public ComponentBuilder strikethrough(boolean strikethrough) {
+        current.setStrikethrough(strikethrough);
         return this;
     }
 
@@ -276,9 +257,8 @@ public final class ComponentBuilder
      * @param obfuscated whether this part is obfuscated
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder obfuscated(boolean obfuscated)
-    {
-        current.setObfuscated( obfuscated );
+    public ComponentBuilder obfuscated(boolean obfuscated) {
+        current.setObfuscated(obfuscated);
         return this;
     }
 
@@ -288,9 +268,8 @@ public final class ComponentBuilder
      * @param insertion the insertion text
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder insertion(String insertion)
-    {
-        current.setInsertion( insertion );
+    public ComponentBuilder insertion(String insertion) {
+        current.setInsertion(insertion);
         return this;
     }
 
@@ -300,9 +279,8 @@ public final class ComponentBuilder
      * @param clickEvent the click event
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder event(ClickEvent clickEvent)
-    {
-        current.setClickEvent( clickEvent );
+    public ComponentBuilder event(ClickEvent clickEvent) {
+        current.setClickEvent(clickEvent);
         return this;
     }
 
@@ -312,9 +290,8 @@ public final class ComponentBuilder
      * @param hoverEvent the hover event
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder event(HoverEvent hoverEvent)
-    {
-        current.setHoverEvent( hoverEvent );
+    public ComponentBuilder event(HoverEvent hoverEvent) {
+        current.setHoverEvent(hoverEvent);
         return this;
     }
 
@@ -323,9 +300,8 @@ public final class ComponentBuilder
      *
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder reset()
-    {
-        return retain( FormatRetention.NONE );
+    public ComponentBuilder reset() {
+        return retain(FormatRetention.NONE);
     }
 
     /**
@@ -334,9 +310,8 @@ public final class ComponentBuilder
      * @param retention the formatting to retain
      * @return this ComponentBuilder for chaining
      */
-    public ComponentBuilder retain(FormatRetention retention)
-    {
-        current.retain( retention );
+    public ComponentBuilder retain(FormatRetention retention) {
+        current.retain(retention);
         return this;
     }
 
@@ -346,15 +321,13 @@ public final class ComponentBuilder
      *
      * @return the created components
      */
-    public BaseComponent[] create()
-    {
-        BaseComponent[] result = parts.toArray( new BaseComponent[ parts.size() + 1 ] );
+    public BaseComponent[] create() {
+        BaseComponent[] result = parts.toArray(new BaseComponent[parts.size() + 1]);
         result[parts.size()] = current;
         return result;
     }
 
-    public static enum FormatRetention
-    {
+    public enum FormatRetention {
 
         /**
          * Specify that we do not want to retain anything from the previous
@@ -380,19 +353,18 @@ public final class ComponentBuilder
     /**
      * Functional interface to join additional components to a ComponentBuilder.
      */
-    public interface Joiner
-    {
+    public interface Joiner {
 
         /**
          * Joins additional components to the provided {@link ComponentBuilder}
          * and then returns it to fulfill a chain pattern.
-         *
+         * <p>
          * Retention may be ignored and is to be understood as an optional
          * recommendation to the Joiner and not as a guarantee to have a
          * previous component in builder unmodified.
          *
          * @param componentBuilder to which to append additional components
-         * @param retention the formatting to possibly retain
+         * @param retention        the formatting to possibly retain
          * @return input componentBuilder for chaining
          */
         ComponentBuilder join(ComponentBuilder componentBuilder, FormatRetention retention);

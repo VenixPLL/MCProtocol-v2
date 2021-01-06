@@ -7,8 +7,7 @@ import me.dickmeister.mcprotocol.minecraft.auth.GameProfile;
  * Skided long time ago from idk, probably MCProtocolLib
  */
 @Data
-public class PlayerInfo
-{
+public class PlayerInfo {
     private int onlinePlayers, maxPlayers;
     private GameProfile[] players;
 

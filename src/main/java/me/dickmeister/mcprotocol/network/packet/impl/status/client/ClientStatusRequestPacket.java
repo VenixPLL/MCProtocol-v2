@@ -6,15 +6,15 @@ import me.dickmeister.mcprotocol.network.netty.PacketBuffer;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 
 
-@Packet.PacketInfo(packetDirection = PacketDirection.SERVERBOUND,connectionState = ConnectionState.STATUS)
-public class ClientStatusRequestPacket extends Packet
-{
+@Packet.PacketInfo(packetDirection = PacketDirection.SERVERBOUND, connectionState = ConnectionState.STATUS)
+public class ClientStatusRequestPacket extends Packet {
     {
         this.setId(0x00);
     }
 
     @Override
-    public void write(PacketBuffer out) throws Exception {}
+    public void write(PacketBuffer out) throws Exception {
+    }
 
     @Override
     public void read(PacketBuffer in) throws Exception {

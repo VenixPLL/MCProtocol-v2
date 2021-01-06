@@ -6,7 +6,7 @@ public enum ConnectionState {
 
     HANDSHAKE(0), STATUS(1), LOGIN(2), PLAY(3);
 
-    private int connectionState;
+    private final int connectionState;
 
     ConnectionState(final int id) {
         this.connectionState = id;

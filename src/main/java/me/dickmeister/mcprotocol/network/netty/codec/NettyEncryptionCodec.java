@@ -13,7 +13,7 @@ public class NettyEncryptionCodec extends ByteToMessageCodec<ByteBuf> {
     private final NettyEncryptionTranslator cipher;
     private final NettyEncryptionTranslator decipher;
 
-    public NettyEncryptionCodec(final Cipher encode,final Cipher decode){
+    public NettyEncryptionCodec(final Cipher encode, final Cipher decode) {
         this.cipher = new NettyEncryptionTranslator(encode);
         this.decipher = new NettyEncryptionTranslator(decode);
     }

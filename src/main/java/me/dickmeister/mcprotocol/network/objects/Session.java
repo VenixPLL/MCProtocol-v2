@@ -15,7 +15,6 @@ import me.dickmeister.mcprotocol.network.netty.codec.NettyPacketCodec;
 import me.dickmeister.mcprotocol.network.netty.encryption.CryptManager;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginDisconnectPacket;
-import net.md_5.bungee.api.chat.BaseComponent;
 
 import javax.crypto.SecretKey;
 import java.util.Objects;
@@ -33,16 +32,6 @@ public class Session {
             ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE : ChannelFutureListener.CLOSE_ON_FAILURE;
 
     private final Channel channel;
-
-    /**
-     * Changing connectionState on active channel
-     * Wihout changing ConnectionState you cannot receive packets outside base ConnectionState
-     *
-     * @param connectionState Connection state to set.
-     */
-    public final void setConnectionState(final ConnectionState connectionState) {
-        ((NettyPacketCodec) channel.pipeline().get("packetCodec")).setConnectionState(connectionState);
-    }
 
     /**
      * Changing compression threshold or enabling compression if not enabled.
@@ -84,10 +73,21 @@ public class Session {
     }
 
     /**
+     * Changing connectionState on active channel
+     * Wihout changing ConnectionState you cannot receive packets outside base ConnectionState
+     *
+     * @param connectionState Connection state to set.
+     */
+    public final void setConnectionState(final ConnectionState connectionState) {
+        ((NettyPacketCodec) channel.pipeline().get("packetCodec")).setConnectionState(connectionState);
+    }
+
+    /**
      * Getting PacketDirection on which the Session operates
+     *
      * @return PacketDirection used by Session
      */
-    public final PacketDirection getPacketDirection(){
+    public final PacketDirection getPacketDirection() {
         return ((NettyPacketCodec) channel.pipeline().get("packetCodec"))
                 .getPacketDirection();
     }
@@ -107,12 +107,14 @@ public class Session {
 
     /**
      * Disconnecting Session with reason. only works if PacketDirection encoded in PacketCodec is SERVERBOUND
+     *
      * @param reason Reason why client was disconnected. Leave blank if no reason
      */
-    public final void disconnect(final String reason){
-        if(this.getPacketDirection() == PacketDirection.CLIENTBOUND) throw new IllegalStateException("Cannot send disconnect packet to Server. try close()");
+    public final void disconnect(final String reason) {
+        if (this.getPacketDirection() == PacketDirection.CLIENTBOUND)
+            throw new IllegalStateException("Cannot send disconnect packet to Server. try close()");
 
-        switch(this.getConnectionState()){
+        switch (this.getConnectionState()) {
             case LOGIN:
                 sendPacket(new ServerLoginDisconnectPacket(reason));
                 break;
@@ -128,7 +130,7 @@ public class Session {
     /**
      * Raw channel closing wihout any packets or information
      */
-    public final void close(){
+    public final void close() {
         this.channel.close();
     }
 

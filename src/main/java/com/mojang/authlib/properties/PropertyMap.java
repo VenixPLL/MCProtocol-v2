@@ -1,4 +1,5 @@
 package com.mojang.authlib.properties;
+
 import com.google.common.collect.ForwardingMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
@@ -11,34 +12,35 @@ public class PropertyMap extends ForwardingMultimap<String, Property> {
     private final Multimap<String, Property> properties = LinkedHashMultimap.create();
 
 
-
-    protected Multimap<String, Property> delegate() { return this.properties; }
+    protected Multimap<String, Property> delegate() {
+        return this.properties;
+    }
 
     public static class Serializer
-            implements JsonSerializer<PropertyMap>, JsonDeserializer<PropertyMap>
-    {
+            implements JsonSerializer<PropertyMap>, JsonDeserializer<PropertyMap> {
         public PropertyMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             PropertyMap result = new PropertyMap();
 
             if (json instanceof JsonObject) {
-                JsonObject object = (JsonObject)json;
+                JsonObject object = (JsonObject) json;
 
-                for (Map.Entry<String, JsonElement> entry : (Iterable<Map.Entry<String, JsonElement>>)object.entrySet()) {
+                for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
                     if (entry.getValue() instanceof JsonArray) {
-                        for (JsonElement element : (JsonArray)entry.getValue()) {
+                        for (JsonElement element : (JsonArray) entry.getValue()) {
                             result.put(entry.getKey(), new Property(entry.getKey(), element.getAsString()));
                         }
                     }
                 }
             } else if (json instanceof JsonArray) {
-                for (JsonElement element : (JsonArray)json) {
+                for (JsonElement element : (JsonArray) json) {
                     if (element instanceof JsonObject) {
-                        JsonObject object = (JsonObject)element;
+                        JsonObject object = (JsonObject) element;
                         String name = object.getAsJsonPrimitive("name").getAsString();
                         String value = object.getAsJsonPrimitive("value").getAsString();
 
                         if (object.has("signature")) {
-                            result.put(name, new Property(name, value, object.getAsJsonPrimitive("signature").getAsString())); continue;
+                            result.put(name, new Property(name, value, object.getAsJsonPrimitive("signature").getAsString()));
+                            continue;
                         }
                         result.put(name, new Property(name, value));
                     }
@@ -63,10 +65,10 @@ public class PropertyMap extends ForwardingMultimap<String, Property> {
                     object.addProperty("signature", property.getSignature());
                 }
 
-                result.add((JsonElement)object);
+                result.add(object);
             }
 
-            return (JsonElement)result;
+            return result;
         }
     }
 }

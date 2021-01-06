@@ -1,25 +1,14 @@
 package net.md_5.bungee.chat;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import net.md_5.bungee.api.chat.*;
+
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.KeybindComponent;
-import net.md_5.bungee.api.chat.ScoreComponent;
-import net.md_5.bungee.api.chat.SelectorComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
-
 public class ComponentSerializer implements JsonDeserializer<BaseComponent> {
 
+    public static final ThreadLocal<Set<BaseComponent>> serializedComponents = new ThreadLocal<>();
     private static final JsonParser JSON_PARSER = new JsonParser();
     private static final Gson gson = new GsonBuilder().
             registerTypeAdapter(BaseComponent.class, new ComponentSerializer()).
@@ -29,8 +18,6 @@ public class ComponentSerializer implements JsonDeserializer<BaseComponent> {
             registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer()).
             registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer()).
             create();
-
-    public static final ThreadLocal<Set<BaseComponent>> serializedComponents = new ThreadLocal<>();
 
     public static BaseComponent[] parse(String json) {
         JsonElement jsonElement = JSON_PARSER.parse(json);

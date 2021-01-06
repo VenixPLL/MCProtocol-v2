@@ -11,14 +11,14 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.LOGIN,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.LOGIN, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerLoginSetCompressionPacket extends Packet {
+
+    private int threshold;
 
     {
         this.setId(0x03);
     }
-
-    private int threshold;
 
     @Override
     public void read(PacketBuffer buffer) throws Exception {

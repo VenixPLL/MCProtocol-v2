@@ -2,8 +2,7 @@ package me.dickmeister.mcprotocol.util;
 
 import java.util.regex.Pattern;
 
-public final class StringUtil
-{
+public final class StringUtil {
     private static final Pattern patternControlCode = Pattern.compile("(?i)\\u00A7[0-9A-FK-OR]");
 
     private StringUtil() {
@@ -24,7 +23,7 @@ public final class StringUtil
     }
 
     public static String fixColor(String input) {
-        return input.replace("&","§");
+        return input.replace("&", "§");
     }
 
     /**

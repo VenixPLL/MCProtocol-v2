@@ -11,14 +11,14 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(packetDirection = PacketDirection.SERVERBOUND,connectionState = ConnectionState.STATUS)
-public class ClientStatusPingPacket extends Packet{
+@Packet.PacketInfo(packetDirection = PacketDirection.SERVERBOUND, connectionState = ConnectionState.STATUS)
+public class ClientStatusPingPacket extends Packet {
+
+    private long time;
 
     {
         this.setId(0x01);
     }
-
-    private long time;
 
     @Override
     public void write(PacketBuffer out) throws Exception {

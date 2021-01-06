@@ -2,12 +2,13 @@ package me.dickmeister.mcprotocol.network.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
-import java.io.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
@@ -17,8 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-public class PacketBuffer extends ByteBuf
-{
+public class PacketBuffer extends ByteBuf {
     private final ByteBuf byteBuf;
 
     public PacketBuffer(final ByteBuf byteBuf) {
@@ -47,7 +47,7 @@ public class PacketBuffer extends ByteBuf
         return this;
     }
 
-    public void writeBytes(byte b[], int length) throws IOException {
+    public void writeBytes(byte[] b, int length) throws IOException {
         this.writeBytes(b, 0, length);
     }
 
@@ -76,8 +76,7 @@ public class PacketBuffer extends ByteBuf
         return this;
     }
 
-    public int[] readVarIntArray()
-    {
+    public int[] readVarIntArray() {
         return this.readVarIntArray(this.readableBytes());
     }
 
@@ -109,13 +108,11 @@ public class PacketBuffer extends ByteBuf
         return this;
     }
 
-    public long[] readLongArray(long[] array)
-    {
+    public long[] readLongArray(long[] array) {
         return this.readLongArray(array, this.readableBytes() / 8);
     }
 
-    public long[] readLongArray(long[] p_189423_1_, int p_189423_2_)
-    {
+    public long[] readLongArray(long[] p_189423_1_, int p_189423_2_) {
         int i = this.readVarIntFromBuffer();
 
         if (p_189423_1_ == null || p_189423_1_.length != i) {
@@ -134,13 +131,11 @@ public class PacketBuffer extends ByteBuf
     }
 
 
-    public <T extends Enum<T>> T readEnumValue(Class<T> enumClass)
-    {
-        return (T)((Enum[])enumClass.getEnumConstants())[this.readVarIntFromBuffer()];
+    public <T extends Enum<T>> T readEnumValue(Class<T> enumClass) {
+        return (T) ((Enum[]) enumClass.getEnumConstants())[this.readVarIntFromBuffer()];
     }
 
-    public PacketBuffer writeEnumValue(Enum<?> value)
-    {
+    public PacketBuffer writeEnumValue(Enum<?> value) {
         return this.writeVarIntToBuffer(value.ordinal());
     }
 
@@ -170,7 +165,7 @@ public class PacketBuffer extends ByteBuf
 
         while (true) {
             byte b0 = this.readByte();
-            i |= (long)(b0 & 127) << j++ * 7;
+            i |= (long) (b0 & 127) << j++ * 7;
 
             if (j > 10) {
                 throw new RuntimeException("VarLong too big");
@@ -190,8 +185,7 @@ public class PacketBuffer extends ByteBuf
         return this;
     }
 
-    public UUID readUuid()
-    {
+    public UUID readUuid() {
         return new UUID(this.readLong(), this.readLong());
     }
 
