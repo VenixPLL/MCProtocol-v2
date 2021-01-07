@@ -2,6 +2,7 @@ import me.dickmeister.mcprotocol.MCProtocol;
 import me.dickmeister.mcprotocol.client.impl.MinecraftClient;
 import me.dickmeister.mcprotocol.listeners.SessionListener;
 import me.dickmeister.mcprotocol.network.ConnectionState;
+import me.dickmeister.mcprotocol.network.netty.PacketBuffer;
 import me.dickmeister.mcprotocol.network.objects.Session;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.handshake.HandshakePacket;
@@ -11,6 +12,7 @@ import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginSet
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginSuccessPacket;
 import me.dickmeister.mcprotocol.network.packet.impl.play.client.ClientKeepAlivePacket;
 import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerKeepAlivePacket;
+import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerPluginMessagePacket;
 import me.dickmeister.mcprotocol.util.PremiumUtil;
 import net.chris54721.openmcauthenticator.exceptions.AuthenticationUnavailableException;
 import net.chris54721.openmcauthenticator.exceptions.RequestException;
@@ -25,12 +27,6 @@ public class clientTest {
         new MCProtocol().initialize(true);
 
         MCProtocol.DEBUG = true;
-
-        final PremiumUtil.PremiumSession premiumSessionsession = PremiumUtil.makeSession("email", "passwd");
-        premiumSessionsession.authenticate(Proxy.NO_PROXY);
-
-        System.out.println("Premium username: " + premiumSessionsession.getUsername());
-        System.out.println("Premium UID: " + premiumSessionsession.getSelectedProfileUID().toString());
 
         final AtomicReference<UUID> uuid = new AtomicReference<>();
 
@@ -65,8 +61,13 @@ public class clientTest {
                     uuid.set(((ServerLoginSuccessPacket) packet).getUuid());
                 } else if (packet instanceof ServerLoginEncryptionRequestPacket) {
                     System.out.println("Encryption received");
-                    final boolean a = PremiumUtil.parseEncryption(session, (ServerLoginEncryptionRequestPacket) packet, premiumSessionsession.getAccessToken(), premiumSessionsession.getSelectedProfileUID(), Proxy.NO_PROXY);
-                    System.out.println("Encryption status: " + a);
+                }else if(packet instanceof ServerPluginMessagePacket){
+                    System.out.println("Channel: " + ((ServerPluginMessagePacket) packet).getChannel());
+                    final PacketBuffer buf = ((ServerPluginMessagePacket) packet).getBuffer();
+                    final byte[] data = new byte[buf.readableBytes()];
+                    buf.readBytes(data);
+
+                    System.out.println("Data: " + new String(data));
                 }
             }
         });

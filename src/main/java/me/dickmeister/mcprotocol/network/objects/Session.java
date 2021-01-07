@@ -16,6 +16,7 @@ import me.dickmeister.mcprotocol.network.netty.codec.NettyPacketCodec;
 import me.dickmeister.mcprotocol.network.netty.encryption.CryptManager;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginDisconnectPacket;
+import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerDisconnectPacket;
 import me.dickmeister.viaversion.IOPipelineName;
 import me.dickmeister.viaversion.ViaClient;
 import me.dickmeister.viaversion.managers.ViaHostnameProtocol;
@@ -191,7 +192,7 @@ public class Session {
                 sendPacket(new ServerLoginDisconnectPacket(reason));
                 break;
             case PLAY:
-                //TODO ServerDisconnectPacket.
+                sendPacket(new ServerDisconnectPacket(reason));
                 break;
 
             default:

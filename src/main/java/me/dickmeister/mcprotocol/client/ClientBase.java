@@ -6,6 +6,7 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.proxy.HttpProxyHandler;
 import io.netty.handler.proxy.Socks4ProxyHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.Getter;
@@ -55,9 +56,17 @@ public abstract class ClientBase implements IClient {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         final ChannelPipeline pipeline = socketChannel.pipeline();
-                        //TODO add HTTP Support.
-                        if (proxy != Proxy.NO_PROXY)
-                            pipeline.addFirst("proxy", new Socks4ProxyHandler(proxy.address()));
+                        //TODO add HTTP Support. (Powinno działac ale nie testowane)
+                        if (proxy != Proxy.NO_PROXY) {
+                            switch(proxy.type()){
+                                case HTTP:
+                                    pipeline.addFirst("proxy", new HttpProxyHandler(proxy.address()));
+                                    break;
+                                case SOCKS:
+                                    pipeline.addFirst("proxy", new Socks4ProxyHandler(proxy.address()));
+                                    break;
+                            }
+                        }
 
 
                         pipeline.addLast("timer", new ReadTimeoutHandler(30));

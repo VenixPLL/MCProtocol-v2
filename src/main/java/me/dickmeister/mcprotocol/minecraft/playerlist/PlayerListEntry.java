@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @Data
 public class PlayerListEntry {
+
     private GameProfile profile;
     private Gamemode gameMode;
     private int ping;
