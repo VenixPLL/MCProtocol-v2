@@ -2,6 +2,7 @@ package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.minecraft.world.vec.Position;
 import me.dickmeister.mcprotocol.network.ConnectionState;
@@ -9,7 +10,7 @@ import me.dickmeister.mcprotocol.network.PacketDirection;
 import me.dickmeister.mcprotocol.network.netty.PacketBuffer;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.CLIENTBOUND)

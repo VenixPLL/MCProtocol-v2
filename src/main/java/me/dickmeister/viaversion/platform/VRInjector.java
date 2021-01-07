@@ -1,5 +1,6 @@
 package me.dickmeister.viaversion.platform;
 
+import me.dickmeister.mcprotocol.MCProtocol;
 import me.dickmeister.viaversion.IOPipelineName;
 import us.myles.ViaVersion.api.platform.ViaInjector;
 import us.myles.ViaVersion.util.GsonUtil;
@@ -26,7 +27,7 @@ public class VRInjector implements ViaInjector {
     }
 
     private int getClientProtocol() {
-        return 340;
+        return MCProtocol.BASE_PROTOCOL;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ViaClient {
         return clients.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
 
-    public void setProtocolConnection(int id) {
+    public void setProtocolVersion(int id) {
         this.protocolConnection = id;
     }
 

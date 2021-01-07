@@ -78,6 +78,11 @@ public class Session {
      * @param clientSide Direction of the Session.
      */
     public final void enableViaVersion(final boolean clientSide) {
+
+        if(!MCProtocol.VIA_ENABLED){
+            throw new IllegalStateException("ViaVersion was not initialized! Enable ViaVersion in McProtocol.initialize");
+        }
+
         if (clientSide) {
             final UserConnection user = new VRClientSideUserConnection(this.channel);
 
@@ -89,8 +94,9 @@ public class Session {
             }
 
             new ProtocolPipeline(user).add(ViaHostnameProtocol.INSTANCE);
-            this.channel.pipeline().addBefore("packetCodec", IOPipelineName.VIA_HANDLER_ENCODER_NAME,
-                    new IOViaEncode(user)).addBefore("packetCodec", IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaDecode(user));
+            this.channel.pipeline()
+                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_ENCODER_NAME, new IOViaEncode(user))
+                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaDecode(user));
 
             return;
         }
@@ -196,7 +202,7 @@ public class Session {
      * Raw channel closing wihout any packets or information
      */
     public final void close() {
-        this.channel.close();
+        if(this.channel.isActive()) this.channel.close();
     }
 
 

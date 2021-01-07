@@ -12,6 +12,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import me.dickmeister.mcprotocol.MCProtocol;
 import me.dickmeister.mcprotocol.listeners.SessionListener;
 import me.dickmeister.mcprotocol.network.ConnectionState;
@@ -47,6 +48,12 @@ public abstract class ServerBase implements IServer {
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
     /**
+     * Amount of threads used by eventExecutors.
+     */
+    @Setter
+    private int threads = 1;
+
+    /**
      * Netty loop group.
      */
     @Getter
@@ -57,7 +64,7 @@ public abstract class ServerBase implements IServer {
     public void bind(int port, final SessionListener sessionListener) {
         try {
 
-            this.eventExecutors = Epoll.isAvailable() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+            this.eventExecutors = Epoll.isAvailable() ? new EpollEventLoopGroup(this.threads) : new NioEventLoopGroup(this.threads);
             Executors.newSingleThreadExecutor().submit(() -> this.run(port, sessionListener));
             this.countDownLatch.await();
 
@@ -108,11 +115,13 @@ public abstract class ServerBase implements IServer {
                             @Override
                             public void channelActive(ChannelHandlerContext ctx) throws Exception {
                                 session = new Session(ctx.channel());
+                                sessionList.add(session);
                                 if (Objects.nonNull(sessionListener)) sessionListener.connected(session);
                             }
 
                             @Override
                             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                                sessionList.remove(session);
                                 if (Objects.nonNull(sessionListener)) sessionListener.disconnected(session);
                             }
 
