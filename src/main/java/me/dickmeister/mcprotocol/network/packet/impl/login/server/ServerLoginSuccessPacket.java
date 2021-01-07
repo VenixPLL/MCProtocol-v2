@@ -24,14 +24,14 @@ public class ServerLoginSuccessPacket extends Packet {
     }
 
     @Override
-    public void read(PacketBuffer buffer) throws Exception {
-        this.uuid = buffer.readUuid();
-        this.username = buffer.readStringFromBuffer(16);
+    public void write(PacketBuffer out) throws Exception {
+        out.writeString(uuid.toString());
+        out.writeString(username);
     }
 
     @Override
-    public void write(PacketBuffer buffer) throws Exception {
-        buffer.writeUuid(this.uuid);
-        buffer.writeString(this.username);
+    public void read(PacketBuffer in) throws Exception {
+        uuid = UUID.fromString(in.readStringFromBuffer(86));
+        username = in.readStringFromBuffer(32);
     }
 }

@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
+import me.dickmeister.mcprotocol.minecraft.world.vec.Position;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +46,18 @@ public class PacketBuffer extends ByteBuf {
         this.writeVarIntToBuffer(array.length);
         this.writeBytes(array);
         return this;
+    }
+
+    public void writePosition(final Position location) {
+        this.writeLong(((long)location.getX() & 0x3FFFFFF) << 38 | ((long)location.getY() & 0xFFF) << 26 | (long)location.getZ() & 0x3FFFFFF);
+    }
+
+    public Position readPosition() {
+        final long val = this.readLong();
+        final double x = ((val >> 38));
+        final double y = ((val >> 26 & 0xFFF));
+        final double z = ((val << 38 >> 38));
+        return new Position(x, y, z);
     }
 
     public void writeBytes(byte[] b, int length) throws IOException {
