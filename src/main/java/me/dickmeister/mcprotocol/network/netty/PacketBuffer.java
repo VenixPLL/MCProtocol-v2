@@ -2,10 +2,16 @@ package me.dickmeister.mcprotocol.network.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
+import me.dickmeister.mcprotocol.minecraft.item.ItemStack;
 import me.dickmeister.mcprotocol.minecraft.world.vec.Position;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +41,83 @@ public class PacketBuffer extends ByteBuf {
         }
 
         return 5;
+    }
+
+    /**
+     * Writes a compressed NBTTagCompound to this buffer
+     */
+    public void writeNBTTagCompoundToBuffer(NBTTagCompound nbt)
+    {
+        if (nbt == null)
+        {
+            this.writeByte(0);
+        }
+        else
+        {
+            try
+            {
+                CompressedStreamTools.write(nbt, new ByteBufOutputStream(this));
+            }
+            catch (IOException var3)
+            {
+                throw new EncoderException(var3);
+            }
+        }
+    }
+
+    /**
+     * Reads a compressed NBTTagCompound from this buffer
+     */
+    public NBTTagCompound readNBTTagCompoundFromBuffer() throws IOException
+    {
+        int var1 = this.readerIndex();
+        byte var2 = this.readByte();
+
+        if (var2 == 0)
+        {
+            return null;
+        }
+        else
+        {
+            this.readerIndex(var1);
+            return CompressedStreamTools.func_152456_a(new ByteBufInputStream(this), new NBTSizeTracker(2097152L));
+        }
+    }
+
+    /**
+     * Writes the ItemStack's ID (short), then size (byte), then damage. (short)
+     */
+    public void writeItemStackToBuffer(ItemStack stack)
+    {
+        if (stack == null)
+        {
+            this.writeShort(-1);
+        }
+        else
+        {
+            this.writeShort(stack.getId());
+            this.writeByte(stack.getAmount());
+            this.writeShort(stack.getData());
+            this.writeNBTTagCompoundToBuffer(stack.getNbt());
+        }
+    }
+
+    /**
+     * Reads an ItemStack from this buffer
+     */
+    public ItemStack readItemStackFromBuffer() throws IOException
+    {
+        ItemStack var1 = null;
+        final short id = this.readShort();
+
+        if (id >= 0)
+        {
+            final byte amount = this.readByte();
+            final short data = this.readShort();
+            var1 = new ItemStack(id, amount, data,this.readNBTTagCompoundFromBuffer());
+        }
+
+        return var1;
     }
 
 
