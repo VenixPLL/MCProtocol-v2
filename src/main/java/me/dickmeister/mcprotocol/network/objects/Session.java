@@ -1,5 +1,6 @@
 package me.dickmeister.mcprotocol.network.objects;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import lombok.Getter;
@@ -15,6 +16,16 @@ import me.dickmeister.mcprotocol.network.netty.codec.NettyPacketCodec;
 import me.dickmeister.mcprotocol.network.netty.encryption.CryptManager;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginDisconnectPacket;
+import me.dickmeister.viaversion.IOPipelineName;
+import me.dickmeister.viaversion.ViaClient;
+import me.dickmeister.viaversion.managers.ViaHostnameProtocol;
+import me.dickmeister.viaversion.netty.VRClientSideUserConnection;
+import me.dickmeister.viaversion.netty.client.IOViaDecode;
+import me.dickmeister.viaversion.netty.client.IOViaEncode;
+import me.dickmeister.viaversion.netty.server.IOViaServerDecode;
+import me.dickmeister.viaversion.netty.server.IOViaServerEncode;
+import us.myles.ViaVersion.api.data.UserConnection;
+import us.myles.ViaVersion.api.protocol.ProtocolPipeline;
 
 import javax.crypto.SecretKey;
 import java.util.Objects;
@@ -32,6 +43,7 @@ public class Session {
             ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE : ChannelFutureListener.CLOSE_ON_FAILURE;
 
     private final Channel channel;
+    private ViaClient client;
 
     /**
      * Changing compression threshold or enabling compression if not enabled.
@@ -44,12 +56,49 @@ public class Session {
      */
     public final void setCompressionThreshold(final int threshold) {
         if (Objects.isNull(channel.pipeline().get("compressionCodec"))) {
-            channel.pipeline().addBefore("packetCodec", "compressionCodec", new NettyCompressionCodec(threshold));
+
+            if (this.channel.pipeline().get(IOPipelineName.VIA_HANDLER_ENCODER_NAME) == null) {
+                this.channel.pipeline().addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.PACKET_COMPRESSION, new NettyCompressionCodec(threshold));
+            } else {
+                this.channel.pipeline().addBefore(IOPipelineName.VIA_HANDLER_ENCODER_NAME, IOPipelineName.PACKET_COMPRESSION, new NettyCompressionCodec(threshold));
+            }
+
             return;
         }
 
         ((NettyCompressionCodec) channel.pipeline().get("compressionCodec"))
                 .setCompressionThreshold(threshold);
+
+    }
+
+    /**
+     * Enabling viaVersion multiProtocol and crossversion support;
+     * Permanent for Session.
+     *
+     * @param clientSide Direction of the Session.
+     */
+    public final void enableViaVersion(final boolean clientSide) {
+        if (clientSide) {
+            final UserConnection user = new VRClientSideUserConnection(this.channel);
+
+            if (this.client == null) {
+                client = new ViaClient(user.getId());
+                client.initFabric();
+            } else {
+                client.updateID(user.getId());
+            }
+
+            new ProtocolPipeline(user).add(ViaHostnameProtocol.INSTANCE);
+            this.channel.pipeline().addBefore("packetCodec", IOPipelineName.VIA_HANDLER_ENCODER_NAME,
+                    new IOViaEncode(user)).addBefore("packetCodec", IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaDecode(user));
+
+            return;
+        }
+
+        final UserConnection info = new UserConnection(this.channel, false);
+        new ProtocolPipeline(info);
+        this.channel.pipeline().addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_ENCODER_NAME, new IOViaServerEncode(info));
+        this.channel.pipeline().addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaServerDecode(info));
     }
 
     /**
@@ -103,6 +152,22 @@ public class Session {
      */
     public final void sendPacket(@NonNull final Packet packet) {
         this.channel.writeAndFlush(packet).addListener(this.futureListener);
+    }
+
+    /**
+     * Raw data send through Channel, bypassing all Netty Codecs
+     * @param buffer Buffer with data to send
+     * @param currentThread Thread to send if false it will send data with Channel eventLoop
+     */
+    public void sendRawPacket(final ByteBuf buffer, boolean currentThread) {
+        if (currentThread) {
+            this.channel.pipeline().context("frameCodec").writeAndFlush(buffer);
+            return;
+        }
+
+        this.channel.eventLoop().submit(() -> {
+            this.channel.pipeline().context("frameCodec").writeAndFlush(buffer);
+        });
     }
 
     /**

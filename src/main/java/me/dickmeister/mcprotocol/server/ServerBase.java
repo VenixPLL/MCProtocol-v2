@@ -22,6 +22,11 @@ import me.dickmeister.mcprotocol.network.objects.Session;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.util.LogUtil;
+import me.dickmeister.viaversion.IOPipelineName;
+import me.dickmeister.viaversion.netty.server.IOViaServerDecode;
+import me.dickmeister.viaversion.netty.server.IOViaServerEncode;
+import us.myles.ViaVersion.api.data.UserConnection;
+import us.myles.ViaVersion.api.protocol.ProtocolPipeline;
 
 import java.util.List;
 import java.util.Objects;
@@ -93,8 +98,8 @@ public abstract class ServerBase implements IServer {
                         final ChannelPipeline pipeline = socketChannel.pipeline();
 
                         pipeline.addLast("timer", new ReadTimeoutHandler(30));
-                        pipeline.addLast("frameCodec", new NettyVarInt21FrameCodec());
-                        pipeline.addLast("packetCodec", new NettyPacketCodec(PacketDirection.SERVERBOUND, packetRegistry, ConnectionState.HANDSHAKE));
+                        pipeline.addLast(IOPipelineName.FRAME_CODEC, new NettyVarInt21FrameCodec());
+                        pipeline.addLast(IOPipelineName.PACKET_CODEC, new NettyPacketCodec(PacketDirection.SERVERBOUND, packetRegistry, ConnectionState.HANDSHAKE));
 
                         pipeline.addLast("handler", new SimpleChannelInboundHandler<Packet>() {
 
