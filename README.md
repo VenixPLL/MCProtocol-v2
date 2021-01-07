@@ -6,8 +6,10 @@
 - CustomPackets
 - Server
 - Client
+- Premium support
 
 ### Libraries
 - ViaVersion Based on ViaMCP -> [ViaMCP](https://github.com/LaVache-FR/ViaMCP "ViaMCP")
 - BungeeCord ChatAPI -> [ChatAPI](https://github.com/SpigotMC/BungeeCord/tree/master/chat)
 - Minecraft Client NBT **(Used MCP)**
+- OpenMCAuthenticator [OpenMCAuthenticator](https://github.com/chris54721/OpenMCAuthenticator)

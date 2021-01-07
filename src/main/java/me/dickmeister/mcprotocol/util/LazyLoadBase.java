@@ -1,5 +1,9 @@
 package me.dickmeister.mcprotocol.util;
 
+/**
+ * Skidded
+ * @param <T>
+ */
 public abstract class LazyLoadBase<T> {
     private T value;
     private boolean loaded;

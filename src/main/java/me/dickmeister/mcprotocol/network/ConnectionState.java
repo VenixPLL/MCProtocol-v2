@@ -2,6 +2,9 @@ package me.dickmeister.mcprotocol.network;
 
 import java.util.Arrays;
 
+/**
+ * Minecraft protocol Connection States
+ */
 public enum ConnectionState {
 
     HANDSHAKE(0), STATUS(1), LOGIN(2), PLAY(3);
