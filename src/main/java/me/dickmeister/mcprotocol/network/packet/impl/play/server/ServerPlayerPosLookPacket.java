@@ -1,7 +1,6 @@
 package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.minecraft.world.vec.Position;
@@ -13,18 +12,18 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.PLAY, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerPlayerPosLookPacket extends Packet {
-
-    {
-        this.setId(0x2F);
-    }
 
     private Position pos;
     private float yaw;
     private float pitch;
     private int flags;
     private int teleportID;
+
+    {
+        this.setId(0x2F);
+    }
 
     public ServerPlayerPosLookPacket(Position pos, float yaw, float pitch, int flags) {
         this.pos = pos;

@@ -4,12 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
-public enum MessagePosition
-{
+public enum MessagePosition {
     CHATBOX(0),
     SYSTEM(1),
     HOTBAR(2);

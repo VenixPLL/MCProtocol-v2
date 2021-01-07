@@ -2,6 +2,7 @@ package me.dickmeister.mcprotocol.util;
 
 /**
  * Skidded
+ *
  * @param <T>
  */
 public abstract class LazyLoadBase<T> {

@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum PlayerListEntryAction
-{
+public enum PlayerListEntryAction {
     ADD_PLAYER(0),
     UPDATE_GAMEMODE(1),
     UPDATE_LATENCY(2),

@@ -8,6 +8,7 @@ public class Property {
     private final String name;
     private final String value;
     private final String signature;
+
     public Property(String value, String name) {
         this(value, name, null);
     }

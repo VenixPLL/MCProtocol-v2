@@ -2,12 +2,12 @@ package me.dickmeister.mcprotocol.minecraft;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum Gamemode
-{
+public enum Gamemode {
     SURVIVAL(0),
     CREATIVE(1),
     ADVENTURE(2),

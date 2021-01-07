@@ -10,7 +10,7 @@ public class ViaProtocol {
 
     private static final LinkedList<ProtocolVersion> protocolVersions = new LinkedList<>();
 
-    public static void load(){
+    public static void load() {
         int count = 0;
         for (Field f : ProtocolVersion.class.getDeclaredFields()) {
             if (f.getType().equals(ProtocolVersion.class)) {

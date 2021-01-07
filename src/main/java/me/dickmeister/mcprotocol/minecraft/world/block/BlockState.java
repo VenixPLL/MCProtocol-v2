@@ -13,8 +13,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class BlockState
-{
+public class BlockState {
     private int id;
     private int data;
 }

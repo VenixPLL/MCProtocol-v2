@@ -11,7 +11,6 @@ import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginSet
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginSuccessPacket;
 import me.dickmeister.mcprotocol.network.packet.impl.play.client.ClientKeepAlivePacket;
 import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerKeepAlivePacket;
-import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.util.PremiumUtil;
 import net.chris54721.openmcauthenticator.exceptions.AuthenticationUnavailableException;
 import net.chris54721.openmcauthenticator.exceptions.RequestException;
@@ -27,7 +26,7 @@ public class clientTest {
 
         MCProtocol.DEBUG = true;
 
-        final PremiumUtil.PremiumSession premiumSessionsession = PremiumUtil.makeSession("email","passwd");
+        final PremiumUtil.PremiumSession premiumSessionsession = PremiumUtil.makeSession("email", "passwd");
         premiumSessionsession.authenticate(Proxy.NO_PROXY);
 
         System.out.println("Premium username: " + premiumSessionsession.getUsername());
@@ -41,7 +40,7 @@ public class clientTest {
             public void connected(Session session) {
                 session.enableViaVersion(true);
                 session.getClient().setProtocolVersion(47); //Target server protocol
-                session.sendPacket(new HandshakePacket(340,"192.168.100.133",25565,2));
+                session.sendPacket(new HandshakePacket(340, "192.168.100.133", 25565, 2));
                 session.sendPacket(new ClientLoginStartPacket("1381"));
                 session.setConnectionState(ConnectionState.LOGIN);
                 System.out.println("Connected!");
@@ -54,25 +53,25 @@ public class clientTest {
 
             @Override
             public void onPacketReceived(Session session, Packet packet) {
-                if(packet instanceof ServerLoginSetCompressionPacket){
+                if (packet instanceof ServerLoginSetCompressionPacket) {
                     session.setCompressionThreshold(((ServerLoginSetCompressionPacket) packet).getThreshold());
                     System.out.println("Compression set!");
-                }else if(packet instanceof ServerKeepAlivePacket){
+                } else if (packet instanceof ServerKeepAlivePacket) {
                     session.sendPacket(new ClientKeepAlivePacket(((ServerKeepAlivePacket) packet).getPingId()));
                     System.out.println("Keepalive resent!");
-                }else if(packet instanceof ServerLoginSuccessPacket){
+                } else if (packet instanceof ServerLoginSuccessPacket) {
                     session.setConnectionState(ConnectionState.PLAY);
                     System.out.println("Success received!");
                     uuid.set(((ServerLoginSuccessPacket) packet).getUuid());
-                }else if(packet instanceof ServerLoginEncryptionRequestPacket){
+                } else if (packet instanceof ServerLoginEncryptionRequestPacket) {
                     System.out.println("Encryption received");
-                    final boolean a = PremiumUtil.parseEncryption(session, (ServerLoginEncryptionRequestPacket) packet,premiumSessionsession.getAccessToken(),premiumSessionsession.getSelectedProfileUID(),Proxy.NO_PROXY);
+                    final boolean a = PremiumUtil.parseEncryption(session, (ServerLoginEncryptionRequestPacket) packet, premiumSessionsession.getAccessToken(), premiumSessionsession.getSelectedProfileUID(), Proxy.NO_PROXY);
                     System.out.println("Encryption status: " + a);
                 }
             }
         });
 
-        client.connect("192.168.100.133",25565, Proxy.NO_PROXY);
+        client.connect("192.168.100.133", 25565, Proxy.NO_PROXY);
     }
 
 }

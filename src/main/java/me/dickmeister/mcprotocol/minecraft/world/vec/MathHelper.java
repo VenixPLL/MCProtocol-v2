@@ -3,28 +3,24 @@ package me.dickmeister.mcprotocol.minecraft.world.vec;
 import java.util.Random;
 import java.util.UUID;
 
-public class MathHelper
-{
+public class MathHelper {
     public static final float field_180189_a = sqrt_float(2.0F);
-    private static final int SIN_BITS = 12;
-    private static final int SIN_MASK = 4095;
-    private static final int SIN_COUNT = 4096;
     public static final float PI = (float) Math.PI;
     public static final float PI2 = ((float) Math.PI * 2F);
     public static final float PId2 = ((float) Math.PI / 2F);
+    public static final float deg2Rad = 0.017453292F;
+    private static final int SIN_BITS = 12;
+    private static final int SIN_MASK = 4095;
+    private static final int SIN_COUNT = 4096;
     private static final float radFull = ((float) Math.PI * 2F);
     private static final float degFull = 360.0F;
     private static final float radToIndex = 651.8986F;
     private static final float degToIndex = 11.377778F;
-    public static final float deg2Rad = 0.017453292F;
     private static final float[] SIN_TABLE_FAST = new float[4096];
-    public static boolean fastMath = false;
-
     /**
      * A table of sin values computed from 0 (inclusive) to 2*pi (exclusive), with steps of 2*PI / 65536.
      */
     private static final float[] SIN_TABLE = new float[65536];
-
     /**
      * Though it looks like an array, this is really more like a mapping.  Key (index of this array) is the upper 5 bits
      * of the result of multiplying a 32-bit unsigned integer by the B(2, 5) De Bruijn sequence 0x077CB531.  Value
@@ -33,6 +29,25 @@ public class MathHelper
      * this number" calculations.
      */
     private static final int[] multiplyDeBruijnBitPosition;
+    public static boolean fastMath = false;
+
+    static {
+        int i;
+
+        for (i = 0; i < 65536; ++i) {
+            SIN_TABLE[i] = (float) Math.sin((double) i * Math.PI * 2.0D / 65536.0D);
+        }
+
+        multiplyDeBruijnBitPosition = new int[]{0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9};
+
+        for (i = 0; i < 4096; ++i) {
+            SIN_TABLE_FAST[i] = (float) Math.sin((double) (((float) i + 0.5F) / 4096.0F * ((float) Math.PI * 2F)));
+        }
+
+        for (i = 0; i < 360; i += 90) {
+            SIN_TABLE_FAST[(int) ((float) i * 11.377778F) & 4095] = (float) Math.sin((double) ((float) i * 0.017453292F));
+        }
+    }
 
     /**
      * sin looked up in a table
@@ -179,7 +194,7 @@ public class MathHelper
     }
 
     public static UUID getRandomUuid(Random rand) {
-        return new UUID(rand.nextLong() & -61441L | 16384L,rand.nextLong() & 4611686018427387903L | Long.MIN_VALUE);
+        return new UUID(rand.nextLong() & -61441L | 16384L, rand.nextLong() & 4611686018427387903L | Long.MIN_VALUE);
     }
 
     public static double average(long[] p_76127_0_) {
@@ -360,23 +375,5 @@ public class MathHelper
         long var1 = p_180182_0_.nextLong() & -61441L | 16384L;
         long var3 = p_180182_0_.nextLong() & 4611686018427387903L | Long.MIN_VALUE;
         return new UUID(var1, var3);
-    }
-
-    static {
-        int i;
-
-        for (i = 0; i < 65536; ++i) {
-            SIN_TABLE[i] = (float) Math.sin((double) i * Math.PI * 2.0D / 65536.0D);
-        }
-
-        multiplyDeBruijnBitPosition = new int[]{0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9};
-
-        for (i = 0; i < 4096; ++i) {
-            SIN_TABLE_FAST[i] = (float) Math.sin((double) (((float) i + 0.5F) / 4096.0F * ((float) Math.PI * 2F)));
-        }
-
-        for (i = 0; i < 360; i += 90) {
-            SIN_TABLE_FAST[(int) ((float) i * 11.377778F) & 4095] = (float) Math.sin((double) ((float) i * 0.017453292F));
-        }
     }
 }

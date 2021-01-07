@@ -19,16 +19,16 @@ public class ViaClient {
         this.id = id;
     }
 
+    public static ViaClient getClient(long id) {
+        return clients.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
+    }
+
     public void initFabric() {
         clients.add(this);
     }
 
     public void updateID(long id) {
         this.id = id;
-    }
-
-    public static ViaClient getClient(long id) {
-        return clients.stream().filter(c -> c.getId() == id).findFirst().orElse(null);
     }
 
     public void setProtocolVersion(int id) {

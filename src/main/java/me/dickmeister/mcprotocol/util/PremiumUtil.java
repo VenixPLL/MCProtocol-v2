@@ -14,7 +14,6 @@ import net.chris54721.openmcauthenticator.exceptions.RequestException;
 import net.chris54721.openmcauthenticator.responses.AuthenticationResponse;
 
 import javax.crypto.SecretKey;
-import javax.naming.AuthenticationException;
 import java.math.BigInteger;
 import java.net.Proxy;
 import java.security.PublicKey;
@@ -28,11 +27,12 @@ public class PremiumUtil {
 
     /**
      * Parsing client encryption. Enabling and sending requests!
-     * @param session Active client Session
-     * @param packet Packet received from the Server
+     *
+     * @param session     Active client Session
+     * @param packet      Packet received from the Server
      * @param accessToken PremiumSession accessToken
-     * @param uuid UUID of Current Minecraft Session (Received in ServerLoginSuccessPacket)
-     * @param proxy Proxy to make request through
+     * @param uuid        UUID of Current Minecraft Session (Received in ServerLoginSuccessPacket)
+     * @param proxy       Proxy to make request through
      * @return Returns request state. if true the request was sent successfully, if false some error occurred (Enable DEBUG)
      */
     public static final boolean parseEncryption(final Session session, final ServerLoginEncryptionRequestPacket packet,
@@ -51,8 +51,8 @@ public class PremiumUtil {
             session.sendPacket(new ClientLoginEncryptionResponsePacket(secretkey, publicKey, packet.getVerifyToken()));
             session.enableEncryption(secretkey);
             return true;
-        } catch(Throwable throwable) {
-            if(MCProtocol.DEBUG) throwable.printStackTrace();
+        } catch (Throwable throwable) {
+            if (MCProtocol.DEBUG) throwable.printStackTrace();
             return false;
         }
     }
@@ -61,8 +61,8 @@ public class PremiumUtil {
         //TODO
     }
 
-    public static final PremiumSession makeSession(final String login,final String password){
-        return new PremiumSession(login,password);
+    public static final PremiumSession makeSession(final String login, final String password) {
+        return new PremiumSession(login, password);
     }
 
 
@@ -91,10 +91,11 @@ public class PremiumUtil {
 
         /**
          * Logging in to the account.
+         *
          * @param proxy Proxy to connect through
          */
         public void authenticate(Proxy proxy) throws AuthenticationUnavailableException, RequestException {
-            final AuthenticationResponse authenticationResponse = OpenMCAuthenticator.authenticate(login, password,null, proxy);
+            final AuthenticationResponse authenticationResponse = OpenMCAuthenticator.authenticate(login, password, null, proxy);
             if (Objects.nonNull(authenticationResponse.getSelectedProfile())) {
                 username = authenticationResponse.getSelectedProfile().getName();
                 selectedProfileUID = authenticationResponse.getSelectedProfile().getUUID();
@@ -106,6 +107,7 @@ public class PremiumUtil {
 
         /**
          * Checking if the Account is ready to be used!
+         *
          * @return Ready state
          */
         public boolean isReady() {
@@ -115,6 +117,7 @@ public class PremiumUtil {
 
         /**
          * Invalidating account
+         *
          * @param proxy Proxy to connect through
          */
         public void invalidate(final Proxy proxy) throws AuthenticationUnavailableException, RequestException {
@@ -123,6 +126,7 @@ public class PremiumUtil {
 
         /**
          * Logging out of a Account
+         *
          * @param proxy Proxy to connect through
          */
         public void signout(final Proxy proxy) throws AuthenticationUnavailableException, RequestException {

@@ -1,7 +1,6 @@
 package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.minecraft.Difficulty;
@@ -15,13 +14,8 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND,connectionState = ConnectionState.PLAY)
-public class ServerJoinGamePacket extends Packet
-{
-    {
-        this.setId(0x23);
-    }
-
+@Packet.PacketInfo(packetDirection = PacketDirection.CLIENTBOUND, connectionState = ConnectionState.PLAY)
+public class ServerJoinGamePacket extends Packet {
     private int entityId;
     private Gamemode gamemode;
     private Dimension dimension;
@@ -29,6 +23,10 @@ public class ServerJoinGamePacket extends Packet
     private int maxPlayers;
     private String levelType;
     private boolean reduced_debug;
+
+    {
+        this.setId(0x23);
+    }
 
     @Override
     public void write(PacketBuffer out) throws Exception {

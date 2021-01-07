@@ -5,11 +5,11 @@ import me.dickmeister.mcprotocol.minecraft.Gamemode;
 import me.dickmeister.mcprotocol.minecraft.auth.GameProfile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+
 import java.util.Objects;
 
 @Data
-public class PlayerListEntry
-{
+public class PlayerListEntry {
     private GameProfile profile;
     private Gamemode gameMode;
     private int ping;
@@ -49,6 +49,7 @@ public class PlayerListEntry
         );
 
     }
+
     public String getDisplayAsJson() {
         return ComponentSerializer.toString(displayName);
     }

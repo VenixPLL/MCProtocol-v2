@@ -2,12 +2,12 @@ package me.dickmeister.mcprotocol.minecraft;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum Difficulty
-{
+public enum Difficulty {
     PEACEFULL(0),
     EASY(1),
     NORMAL(2),

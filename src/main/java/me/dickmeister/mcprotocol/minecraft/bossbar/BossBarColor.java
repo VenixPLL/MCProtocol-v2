@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BossBarColor
-{
+public enum BossBarColor {
     PINK(0),
     CYAN(1),
     RED(2),

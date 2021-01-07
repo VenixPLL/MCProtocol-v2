@@ -1,6 +1,5 @@
 package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.minecraft.chat.MessagePosition;
@@ -14,8 +13,11 @@ import net.md_5.bungee.chat.ComponentSerializer;
 
 @Getter
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.PLAY, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerChatPacket extends Packet {
+    private BaseComponent[] message;
+    private MessagePosition position;
+
     {
         this.setId(0x0F);
     }
@@ -28,14 +30,10 @@ public class ServerChatPacket extends Packet {
         this.message = components;
         this.position = position;
     }
-
     public ServerChatPacket(String message, MessagePosition position) {
-        this.message = new BaseComponent[] { new TextComponent(message) };
+        this.message = new BaseComponent[]{new TextComponent(message)};
         this.position = position;
     }
-
-    private BaseComponent[] message;
-    private MessagePosition position;
 
     @Override
     public void write(PacketBuffer out) throws Exception {
@@ -49,7 +47,7 @@ public class ServerChatPacket extends Packet {
         position = MessagePosition.getById(in.readByte());
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return message.length > 0 ? message[0].toPlainText() : "unknown reason";
     }
 }

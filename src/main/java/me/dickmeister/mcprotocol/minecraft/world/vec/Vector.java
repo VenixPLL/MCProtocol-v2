@@ -9,11 +9,10 @@ import java.util.Random;
  * @since 20.08.2020
  */
 
-public class Vector implements Cloneable
-{
+public class Vector implements Cloneable {
     private static final long serialVersionUID = -2657651106777219169L;
-    private static Random random = new Random();
     private static final double epsilon = 1.0E-6D;
+    private static Random random = new Random();
     protected double x;
     protected double y;
     protected double z;
@@ -25,9 +24,9 @@ public class Vector implements Cloneable
     }
 
     public Vector(int x, int y, int z) {
-        this.x = (double)x;
-        this.y = (double)y;
-        this.z = (double)z;
+        this.x = (double) x;
+        this.y = (double) y;
+        this.z = (double) z;
     }
 
     public Vector(double x, double y, double z) {
@@ -37,9 +36,44 @@ public class Vector implements Cloneable
     }
 
     public Vector(float x, float y, float z) {
-        this.x = (double)x;
-        this.y = (double)y;
-        this.z = (double)z;
+        this.x = (double) x;
+        this.y = (double) y;
+        this.z = (double) z;
+    }
+
+    public static double getEpsilon() {
+        return 1.0E-6D;
+    }
+
+    public static Vector getMinimum(Vector v1, Vector v2) {
+        return new Vector(Math.min(v1.x, v2.x), Math.min(v1.y, v2.y), Math.min(v1.z, v2.z));
+    }
+
+    public static Vector getMaximum(Vector v1, Vector v2) {
+        return new Vector(Math.max(v1.x, v2.x), Math.max(v1.y, v2.y), Math.max(v1.z, v2.z));
+    }
+
+    public static Vector getRandom() {
+        return new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble());
+    }
+
+    public static Vector deserialize(Map<String, Double> args) {
+        double x = 0.0D;
+        double y = 0.0D;
+        double z = 0.0D;
+        if (args.containsKey("x")) {
+            x = args.get("x");
+        }
+
+        if (args.containsKey("y")) {
+            y = args.get("y");
+        }
+
+        if (args.containsKey("z")) {
+            z = args.get("z");
+        }
+
+        return new Vector(x, y, z);
     }
 
     public Vector add(Vector vec) {
@@ -95,7 +129,7 @@ public class Vector implements Cloneable
 
     public float angle(Vector other) {
         double dot = this.dot(other) / (this.length() * other.length());
-        return (float)Math.acos(dot);
+        return (float) Math.acos(dot);
     }
 
     public Vector midpoint(Vector other) {
@@ -113,9 +147,9 @@ public class Vector implements Cloneable
     }
 
     public Vector multiply(int m) {
-        this.x *= (double)m;
-        this.y *= (double)m;
-        this.z *= (double)m;
+        this.x *= (double) m;
+        this.y *= (double) m;
+        this.z *= (double) m;
         return this;
     }
 
@@ -127,9 +161,9 @@ public class Vector implements Cloneable
     }
 
     public Vector multiply(float m) {
-        this.x *= (double)m;
-        this.y *= (double)m;
-        this.z *= (double)m;
+        this.x *= (double) m;
+        this.y *= (double) m;
+        this.z *= (double) m;
         return this;
     }
 
@@ -181,12 +215,42 @@ public class Vector implements Cloneable
         return this.x;
     }
 
+    public Vector setX(int x) {
+        this.x = (double) x;
+        return this;
+    }
+
+    public Vector setX(double x) {
+        this.x = x;
+        return this;
+    }
+
+    public Vector setX(float x) {
+        this.x = (double) x;
+        return this;
+    }
+
     public int getBlockX() {
         return NumberConversions.floor(this.x);
     }
 
     public double getY() {
         return this.y;
+    }
+
+    public Vector setY(int y) {
+        this.y = (double) y;
+        return this;
+    }
+
+    public Vector setY(double y) {
+        this.y = y;
+        return this;
+    }
+
+    public Vector setY(float y) {
+        this.y = (double) y;
+        return this;
     }
 
     public int getBlockY() {
@@ -197,42 +261,8 @@ public class Vector implements Cloneable
         return this.z;
     }
 
-    public int getBlockZ() {
-        return NumberConversions.floor(this.z);
-    }
-
-    public Vector setX(int x) {
-        this.x = (double)x;
-        return this;
-    }
-
-    public Vector setX(double x) {
-        this.x = x;
-        return this;
-    }
-
-    public Vector setX(float x) {
-        this.x = (double)x;
-        return this;
-    }
-
-    public Vector setY(int y) {
-        this.y = (double)y;
-        return this;
-    }
-
-    public Vector setY(double y) {
-        this.y = y;
-        return this;
-    }
-
-    public Vector setY(float y) {
-        this.y = (double)y;
-        return this;
-    }
-
     public Vector setZ(int z) {
-        this.z = (double)z;
+        this.z = (double) z;
         return this;
     }
 
@@ -242,29 +272,37 @@ public class Vector implements Cloneable
     }
 
     public Vector setZ(float z) {
-        this.z = (double)z;
+        this.z = (double) z;
         return this;
+    }
+
+    public int getBlockZ() {
+        return NumberConversions.floor(this.z);
     }
 
     public boolean equals(Object obj) {
         if (!(obj instanceof Vector)) {
             return false;
         } else {
-            Vector other = (Vector)obj;
+            Vector other = (Vector) obj;
             return Math.abs(this.x - other.x) < 1.0E-6D && Math.abs(this.y - other.y) < 1.0E-6D && Math.abs(this.z - other.z) < 1.0E-6D && this.getClass().equals(obj.getClass());
         }
     }
 
+//    public BlockVector toBlockVector() {
+//        return new BlockVector(this.x, this.y, this.z);
+//    }
+
     public int hashCode() {
-        int hash = 79 * 7 + (int)(Double.doubleToLongBits(this.x) ^ Double.doubleToLongBits(this.x) >>> 32);
-        hash = 79 * hash + (int)(Double.doubleToLongBits(this.y) ^ Double.doubleToLongBits(this.y) >>> 32);
-        hash = 79 * hash + (int)(Double.doubleToLongBits(this.z) ^ Double.doubleToLongBits(this.z) >>> 32);
+        int hash = 79 * 7 + (int) (Double.doubleToLongBits(this.x) ^ Double.doubleToLongBits(this.x) >>> 32);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.y) ^ Double.doubleToLongBits(this.y) >>> 32);
+        hash = 79 * hash + (int) (Double.doubleToLongBits(this.z) ^ Double.doubleToLongBits(this.z) >>> 32);
         return hash;
     }
 
     public Vector clone() {
         try {
-            return (Vector)super.clone();
+            return (Vector) super.clone();
         } catch (CloneNotSupportedException var2) {
             throw new Error(var2);
         }
@@ -282,50 +320,11 @@ public class Vector implements Cloneable
         return new Position(this.x, this.y, this.z, yaw, pitch);
     }
 
-//    public BlockVector toBlockVector() {
-//        return new BlockVector(this.x, this.y, this.z);
-//    }
-
-    public static double getEpsilon() {
-        return 1.0E-6D;
-    }
-
-    public static Vector getMinimum(Vector v1, Vector v2) {
-        return new Vector(Math.min(v1.x, v2.x), Math.min(v1.y, v2.y), Math.min(v1.z, v2.z));
-    }
-
-    public static Vector getMaximum(Vector v1, Vector v2) {
-        return new Vector(Math.max(v1.x, v2.x), Math.max(v1.y, v2.y), Math.max(v1.z, v2.z));
-    }
-
-    public static Vector getRandom() {
-        return new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble());
-    }
-
     public Map<String, Double> serialize() {
         Map<String, Double> result = new LinkedHashMap<>();
         result.put("x", this.getX());
         result.put("y", this.getY());
         result.put("z", this.getZ());
         return result;
-    }
-
-    public static Vector deserialize(Map<String, Double> args) {
-        double x = 0.0D;
-        double y = 0.0D;
-        double z = 0.0D;
-        if (args.containsKey("x")) {
-            x = args.get("x");
-        }
-
-        if (args.containsKey("y")) {
-            y = args.get("y");
-        }
-
-        if (args.containsKey("z")) {
-            z = args.get("z");
-        }
-
-        return new Vector(x, y, z);
     }
 }

@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum TitleAction
-{
+public enum TitleAction {
     TITLE(0),
     SUBTITLE(1),
     TIMES(2),
@@ -17,7 +16,7 @@ public enum TitleAction
 
     private final int id;
 
-    public static TitleAction getById(int id){
+    public static TitleAction getById(int id) {
         return Arrays.stream(TitleAction.values())
                 .filter(titleAction -> titleAction.id == id)
                 .findFirst()

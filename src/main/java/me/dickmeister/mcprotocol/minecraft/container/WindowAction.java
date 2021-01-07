@@ -2,12 +2,12 @@ package me.dickmeister.mcprotocol.minecraft.container;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import java.util.*;
+
+import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum WindowAction
-{
+public enum WindowAction {
     CLICK_ITEM(0),
     SHIFT_CLICK_ITEM(1),
     MOVE_TO_HOTBAR_SLOT(2),

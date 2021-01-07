@@ -46,20 +46,13 @@ public class PacketBuffer extends ByteBuf {
     /**
      * Writes a compressed NBTTagCompound to this buffer
      */
-    public void writeNBTTagCompoundToBuffer(NBTTagCompound nbt)
-    {
-        if (nbt == null)
-        {
+    public void writeNBTTagCompoundToBuffer(NBTTagCompound nbt) {
+        if (nbt == null) {
             this.writeByte(0);
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 CompressedStreamTools.write(nbt, new ByteBufOutputStream(this));
-            }
-            catch (IOException var3)
-            {
+            } catch (IOException var3) {
                 throw new EncoderException(var3);
             }
         }
@@ -68,17 +61,13 @@ public class PacketBuffer extends ByteBuf {
     /**
      * Reads a compressed NBTTagCompound from this buffer
      */
-    public NBTTagCompound readNBTTagCompoundFromBuffer() throws IOException
-    {
+    public NBTTagCompound readNBTTagCompoundFromBuffer() throws IOException {
         int var1 = this.readerIndex();
         byte var2 = this.readByte();
 
-        if (var2 == 0)
-        {
+        if (var2 == 0) {
             return null;
-        }
-        else
-        {
+        } else {
             this.readerIndex(var1);
             return CompressedStreamTools.func_152456_a(new ByteBufInputStream(this), new NBTSizeTracker(2097152L));
         }
@@ -87,14 +76,10 @@ public class PacketBuffer extends ByteBuf {
     /**
      * Writes the ItemStack's ID (short), then size (byte), then damage. (short)
      */
-    public void writeItemStackToBuffer(ItemStack stack)
-    {
-        if (stack == null)
-        {
+    public void writeItemStackToBuffer(ItemStack stack) {
+        if (stack == null) {
             this.writeShort(-1);
-        }
-        else
-        {
+        } else {
             this.writeShort(stack.getId());
             this.writeByte(stack.getAmount());
             this.writeShort(stack.getData());
@@ -105,16 +90,14 @@ public class PacketBuffer extends ByteBuf {
     /**
      * Reads an ItemStack from this buffer
      */
-    public ItemStack readItemStackFromBuffer() throws IOException
-    {
+    public ItemStack readItemStackFromBuffer() throws IOException {
         ItemStack var1 = null;
         final short id = this.readShort();
 
-        if (id >= 0)
-        {
+        if (id >= 0) {
             final byte amount = this.readByte();
             final short data = this.readShort();
-            var1 = new ItemStack(id, amount, data,this.readNBTTagCompoundFromBuffer());
+            var1 = new ItemStack(id, amount, data, this.readNBTTagCompoundFromBuffer());
         }
 
         return var1;
@@ -132,7 +115,7 @@ public class PacketBuffer extends ByteBuf {
     }
 
     public void writePosition(final Position location) {
-        this.writeLong(((long)location.getX() & 0x3FFFFFF) << 38 | ((long)location.getY() & 0xFFF) << 26 | (long)location.getZ() & 0x3FFFFFF);
+        this.writeLong(((long) location.getX() & 0x3FFFFFF) << 38 | ((long) location.getY() & 0xFFF) << 26 | (long) location.getZ() & 0x3FFFFFF);
     }
 
     public Position readPosition() {

@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BossBarAction
-{
+public enum BossBarAction {
     ADD(0),
     REMOVE(1),
     UPDATE_HEALTH(2),

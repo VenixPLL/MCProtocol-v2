@@ -1,7 +1,6 @@
 package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.network.ConnectionState;
@@ -12,15 +11,15 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.PLAY, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerPlayerAbilitiesPacket extends Packet {
+
+    private boolean damage, flying, allowFlying, creative;
+    private float flySpeed, walkSpeed;
 
     {
         this.setId(0x2C);
     }
-
-    private boolean damage, flying, allowFlying, creative;
-    private float flySpeed, walkSpeed;
 
     @Override
     public void write(PacketBuffer out) throws Exception {

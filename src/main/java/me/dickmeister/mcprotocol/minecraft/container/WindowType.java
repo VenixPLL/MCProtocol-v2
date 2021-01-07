@@ -2,6 +2,7 @@ package me.dickmeister.mcprotocol.minecraft.container;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
 import java.util.Arrays;
 
 /**
@@ -11,8 +12,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum WindowType
-{
+public enum WindowType {
     GENERIC_INVENTORY("minecraft:container"),
     ANVIL("minecraft:anvil"),
     BEACON("minecraft:beacon"),

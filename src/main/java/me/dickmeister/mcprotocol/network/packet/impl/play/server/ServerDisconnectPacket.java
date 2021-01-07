@@ -1,6 +1,5 @@
 package me.dickmeister.mcprotocol.network.packet.impl.play.server;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.dickmeister.mcprotocol.network.ConnectionState;
@@ -13,15 +12,15 @@ import net.md_5.bungee.chat.ComponentSerializer;
 
 @Getter
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.CLIENTBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.PLAY, packetDirection = PacketDirection.CLIENTBOUND)
 public class ServerDisconnectPacket extends Packet {
+    private BaseComponent[] reason;
+
     {
         this.setId(0x1A);
     }
 
-    private BaseComponent[] reason;
-
-    public ServerDisconnectPacket(String reason){
+    public ServerDisconnectPacket(String reason) {
         this.reason = new BaseComponent[]{new TextComponent(reason)};
     }
 

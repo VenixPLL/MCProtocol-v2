@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum Dimension
-{
+public enum Dimension {
     NETHER(-1),
     OVERWORLD(0),
     END(1);

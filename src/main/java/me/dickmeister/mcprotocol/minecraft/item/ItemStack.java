@@ -6,8 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 @Getter
 @Setter
-public class ItemStack
-{
+public class ItemStack {
     private int id;
     private int amount;
     private int data;

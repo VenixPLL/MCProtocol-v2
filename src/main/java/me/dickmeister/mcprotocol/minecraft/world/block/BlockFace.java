@@ -12,8 +12,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum BlockFace
-{
+public enum BlockFace {
     DOWN(0),
     UP(1),
     NORTH(2),

@@ -14,8 +14,8 @@ public class MinecraftClient extends ClientBase {
      * Connect implementation without loopGroup.
      * Creates new eventLoop every time executed.
      *
-     * @param host Target server hostname
-     * @param port Target server port
+     * @param host  Target server hostname
+     * @param port  Target server port
      * @param proxy Proxy to connect through
      */
     public void connect(String host, int port, Proxy proxy) {

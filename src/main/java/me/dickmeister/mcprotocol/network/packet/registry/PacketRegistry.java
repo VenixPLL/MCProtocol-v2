@@ -8,7 +8,10 @@ import me.dickmeister.mcprotocol.network.packet.impl.handshake.HandshakePacket;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 

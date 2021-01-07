@@ -79,7 +79,7 @@ public class Session {
      */
     public final void enableViaVersion(final boolean clientSide) {
 
-        if(!MCProtocol.VIA_ENABLED){
+        if (!MCProtocol.VIA_ENABLED) {
             throw new IllegalStateException("ViaVersion was not initialized! Enable ViaVersion in McProtocol.initialize");
         }
 
@@ -162,7 +162,8 @@ public class Session {
 
     /**
      * Raw data send through Channel, bypassing all Netty Codecs
-     * @param buffer Buffer with data to send
+     *
+     * @param buffer        Buffer with data to send
      * @param currentThread Thread to send if false it will send data with Channel eventLoop
      */
     public void sendRawPacket(final ByteBuf buffer, boolean currentThread) {
@@ -202,7 +203,7 @@ public class Session {
      * Raw channel closing wihout any packets or information
      */
     public final void close() {
-        if(this.channel.isActive()) this.channel.close();
+        if (this.channel.isActive()) this.channel.close();
     }
 
 

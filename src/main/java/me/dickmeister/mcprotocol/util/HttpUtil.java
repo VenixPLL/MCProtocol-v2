@@ -10,16 +10,16 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Objects;
 
-public final class HttpUtil
-{
+public final class HttpUtil {
     private HttpUtil() {
     }
 
     /**
      * Sending JSON Data to target URL
-     * @param url URL of the server to send
+     *
+     * @param url     URL of the server to send
      * @param content JSON Data to send
-     * @param proxy proxy to connect through
+     * @param proxy   proxy to connect through
      */
     public static void postJsonRequest(String url, String content, Proxy proxy) {
         final HttpClient httpClient = (Objects.nonNull(proxy) && proxy != Proxy.NO_PROXY
@@ -35,6 +35,7 @@ public final class HttpUtil
             httpPost.addHeader("content-type", "application/json; utf-8");
             httpPost.setEntity(new StringEntity(content));
             httpClient.execute(httpPost);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

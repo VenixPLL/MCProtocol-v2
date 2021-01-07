@@ -10,15 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Position implements Cloneable {
     private double x, y, z;
-
+    private float yaw;
+    private float pitch;
     public Position(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
-
-    private float yaw;
-    private float pitch;
 
     public Position add(Vector vec) {
         this.x += vec.getX();

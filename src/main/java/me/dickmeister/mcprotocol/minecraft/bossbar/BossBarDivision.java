@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum BossBarDivision
-{
+public enum BossBarDivision {
     NONE(0),
     NOTCHES_6(1),
     NOTCHES_10(2),

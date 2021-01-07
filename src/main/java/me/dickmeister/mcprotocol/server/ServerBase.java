@@ -24,10 +24,6 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.util.LogUtil;
 import me.dickmeister.viaversion.IOPipelineName;
-import me.dickmeister.viaversion.netty.server.IOViaServerDecode;
-import me.dickmeister.viaversion.netty.server.IOViaServerEncode;
-import us.myles.ViaVersion.api.data.UserConnection;
-import us.myles.ViaVersion.api.protocol.ProtocolPipeline;
 
 import java.util.List;
 import java.util.Objects;

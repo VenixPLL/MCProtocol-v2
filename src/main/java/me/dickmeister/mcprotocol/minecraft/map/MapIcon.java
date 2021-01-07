@@ -5,8 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MapIcon
-{
+public class MapIcon {
     private int x, y;
     private int size;
     private int direction;
