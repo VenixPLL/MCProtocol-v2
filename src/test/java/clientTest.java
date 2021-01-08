@@ -17,6 +17,7 @@ import me.dickmeister.mcprotocol.util.PremiumUtil;
 import net.chris54721.openmcauthenticator.exceptions.AuthenticationUnavailableException;
 import net.chris54721.openmcauthenticator.exceptions.RequestException;
 
+import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,8 +37,8 @@ public class clientTest {
             public void connected(Session session) {
                 session.enableViaVersion(true);
                 session.getClient().setProtocolVersion(47); //Target server protocol
-                session.sendPacket(new HandshakePacket(340, "192.168.100.133", 25565, 2));
-                session.sendPacket(new ClientLoginStartPacket("1381"));
+                session.sendPacket(new HandshakePacket(340, "51.83.214.47", 25567, 2));
+                session.sendPacket(new ClientLoginStartPacket("McProtocol"));
                 session.setConnectionState(ConnectionState.LOGIN);
                 System.out.println("Connected!");
             }
@@ -72,7 +73,7 @@ public class clientTest {
             }
         });
 
-        client.connect("192.168.100.133", 25565, Proxy.NO_PROXY);
+        client.connect("51.83.214.47", 25567, new Proxy(Proxy.Type.HTTP,new InetSocketAddress("194.181.141.1",8080)));
     }
 
 }

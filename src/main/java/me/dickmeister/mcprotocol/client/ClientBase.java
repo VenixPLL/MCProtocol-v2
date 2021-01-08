@@ -56,7 +56,6 @@ public abstract class ClientBase implements IClient {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         final ChannelPipeline pipeline = socketChannel.pipeline();
-                        //TODO add HTTP Support. (Powinno działac ale nie testowane)
                         if (proxy != Proxy.NO_PROXY) {
                             switch(proxy.type()){
                                 case HTTP:
@@ -68,6 +67,9 @@ public abstract class ClientBase implements IClient {
                             }
                         }
 
+                        session = new Session(socketChannel);
+                        session.getChannel().config().setOption(ChannelOption.TCP_NODELAY, true);
+                        session.getChannel().config().setOption(ChannelOption.IP_TOS, 0x18);
 
                         pipeline.addLast("timer", new ReadTimeoutHandler(30));
                         pipeline.addLast(IOPipelineName.FRAME_CODEC, new NettyVarInt21FrameCodec());
@@ -101,9 +103,7 @@ public abstract class ClientBase implements IClient {
                     }
                 });
 
-        session = new Session(bootstrap.connect(host, port).syncUninterruptibly().channel());
-        session.getChannel().config().setOption(ChannelOption.TCP_NODELAY, true);
-        session.getChannel().config().setOption(ChannelOption.IP_TOS, 0x18);
+        bootstrap.connect(host, port).syncUninterruptibly().channel();
     }
 
     /**
