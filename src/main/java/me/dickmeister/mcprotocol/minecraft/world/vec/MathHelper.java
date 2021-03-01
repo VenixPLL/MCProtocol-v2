@@ -57,6 +57,49 @@ public class MathHelper {
     }
 
     /**
+     * Returns the input value rounded up to the next highest power of two.
+     */
+    public static int smallestEncompassingPowerOfTwo(int value)
+    {
+        int i = value - 1;
+        i = i | i >> 1;
+        i = i | i >> 2;
+        i = i | i >> 4;
+        i = i | i >> 8;
+        i = i | i >> 16;
+        return i + 1;
+    }
+
+    /**
+     * Uses a B(2, 5) De Bruijn sequence and a lookup table to efficiently calculate the log-base-two of the given
+     * value. Optimized for cases where the input value is a power-of-two. If the input value is not a power-of-two,
+     * then subtract 1 from the return value.
+     */
+    public static int log2DeBruijn(int value)
+    {
+        value = isPowerOfTwo(value) ? value : smallestEncompassingPowerOfTwo(value);
+        return multiplyDeBruijnBitPosition[(int)((long)value * 125613361L >> 27) & 31];
+    }
+
+    /**
+     * Efficiently calculates the floor of the base-2 log of an integer value.  This is effectively the index of the
+     * highest bit that is set.  For example, if the number in binary is 0...100101, this will return 5.
+     */
+    public static int log2(int value)
+    {
+        return log2DeBruijn(value) - (isPowerOfTwo(value) ? 0 : 1);
+    }
+
+    public static int hash(int hashCode) {
+        hashCode = hashCode ^ hashCode >>> 16;
+        hashCode = hashCode * -2048144789;
+        hashCode = hashCode ^ hashCode >>> 13;
+        hashCode = hashCode * -1028477387;
+        hashCode = hashCode ^ hashCode >>> 16;
+        return hashCode;
+    }
+
+    /**
      * cos looked up in the sin table with the appropriate offset
      */
 
@@ -110,6 +153,31 @@ public class MathHelper {
         return p_76124_0_ < (double) var2 ? var2 - 1L : var2;
     }
 
+    /**
+     * Returns the greatest integer less than or equal to the float argument
+     */
+    public static int floor(float value) {
+        int i = (int)value;
+        return value < (float)i ? i - 1 : i;
+    }
+
+    /**
+     * returns par0 cast as an int, and no greater than Integer.MAX_VALUE-1024
+     */
+    public static int fastFloor(double value)
+    {
+        return (int)(value + 1024.0D) - 1024;
+    }
+
+    /**
+     * Returns the greatest integer less than or equal to the double argument
+     */
+    public static int floor(double value)
+    {
+        int i = (int)value;
+        return value < (double)i ? i - 1 : i;
+    }
+
     public static int func_154353_e(double p_154353_0_) {
         return (int) (p_154353_0_ >= 0.0D ? p_154353_0_ : -p_154353_0_ + 1.0D);
     }
@@ -121,8 +189,9 @@ public class MathHelper {
     /**
      * Returns the unsigned value of an int.
      */
-    public static int abs_int(int p_76130_0_) {
-        return p_76130_0_ >= 0 ? p_76130_0_ : -p_76130_0_;
+    public static int abs(int value)
+    {
+        return value >= 0 ? value : -value;
     }
 
     public static int ceiling_float_int(float p_76123_0_) {
@@ -306,21 +375,11 @@ public class MathHelper {
     }
 
     /**
-     * Uses a B(2, 5) De Bruijn sequence and a lookup table to efficiently calculate the log-base-two of the given
-     * value.  Optimized for cases where the input value is a power-of-two.  If the input value is not a power-of-two,
-     * then subtract 1 from the return value.
-     */
-    private static int calculateLogBaseTwoDeBruijn(int p_151241_0_) {
-        p_151241_0_ = isPowerOfTwo(p_151241_0_) ? p_151241_0_ : roundUpToPowerOfTwo(p_151241_0_);
-        return multiplyDeBruijnBitPosition[(int) ((long) p_151241_0_ * 125613361L >> 27) & 31];
-    }
-
-    /**
      * Efficiently calculates the floor of the base-2 log of an integer value.  This is effectively the index of the
      * highest bit that is set.  For example, if the number in binary is 0...100101, this will return 5.
      */
     public static int calculateLogBaseTwo(int p_151239_0_) {
-        return calculateLogBaseTwoDeBruijn(p_151239_0_) - (isPowerOfTwo(p_151239_0_) ? 0 : 1);
+        return log2DeBruijn(p_151239_0_) - (isPowerOfTwo(p_151239_0_) ? 0 : 1);
     }
 
     public static int func_154354_b(int p_154354_0_, int p_154354_1_) {

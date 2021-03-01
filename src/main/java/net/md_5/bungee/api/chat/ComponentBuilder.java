@@ -52,6 +52,13 @@ public final class ComponentBuilder {
     }
 
     /**
+     * Creates a ComponentBuilder with the empty text
+     */
+    public ComponentBuilder() {
+        current = new TextComponent("");
+    }
+
+    /**
      * Creates a ComponentBuilder with the given component as the first part.
      *
      * @param component the first component element

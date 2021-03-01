@@ -64,8 +64,8 @@ public class Position implements Cloneable {
         return NumberConversions.square(this.x) + NumberConversions.square(this.y) + NumberConversions.square(this.z);
     }
 
-    public double distance(Position positon) {
-        return Math.sqrt(this.distanceSquared(positon));
+    public double distance(Position position) {
+        return Math.sqrt(this.distanceSquared(position));
     }
 
     public double distanceSquared(Position o) {

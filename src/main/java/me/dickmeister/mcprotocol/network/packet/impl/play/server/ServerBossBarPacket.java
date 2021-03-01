@@ -118,5 +118,28 @@ public class ServerBossBarPacket extends Packet
     }
 
     @Override
-    public void read(PacketBuffer in) throws Exception {}
+    public void read(PacketBuffer in) throws Exception {
+        this.uuid = in.readUuid();
+        this.action = BossBarAction.values()[in.readVarIntFromBuffer()];
+
+        if(this.action == BossBarAction.ADD || action == BossBarAction.UPDATE_TITLE){
+            this.title = ComponentSerializer.parse(in.readStringFromBuffer(32767));
+        }
+
+        if (action == BossBarAction.ADD || action == BossBarAction.UPDATE_HEALTH) {
+            this.health = in.readFloat();
+        }
+
+        if (action == BossBarAction.ADD || action == BossBarAction.UPDATE_STYLE) {
+            this.color = BossBarColor.values()[in.readVarIntFromBuffer()];
+            this.division = BossBarDivision.values()[in.readVarIntFromBuffer()];
+        }
+
+        if (action == BossBarAction.ADD || action == BossBarAction.UPDATE_FLAGS) {
+            var flags = in.readByte();
+            darkenSky = (flags & 0x1) > 0;
+            dragonBar = (flags & 0x2) > 0;
+        }
+
+    }
 }

@@ -24,7 +24,6 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.util.LogUtil;
 import me.dickmeister.viaversion.IOPipelineName;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -57,17 +56,16 @@ public abstract class ServerBase implements IServer {
     private ChannelFuture channelFuture;
 
     @Override
-    public void bind(int port, final SessionListener sessionListener) {
+    public void bind(int port, SessionListener sessionListener) {
         try {
-
-            this.eventExecutors = Epoll.isAvailable() ? new EpollEventLoopGroup(this.threads) : new NioEventLoopGroup(this.threads);
+            eventExecutors = Epoll.isAvailable() ? new EpollEventLoopGroup(threads) : new NioEventLoopGroup(threads);
             Executors.newSingleThreadExecutor().submit(() -> this.run(port, sessionListener));
-            this.countDownLatch.await();
-
-
-        } catch (final Throwable t) {
+            countDownLatch.await();
+        } catch (Throwable throwable) {
             LogUtil.err(this.getClass(), "Failed to start server during initialization!");
-            if (MCProtocol.DEBUG) t.printStackTrace();
+            if (MCProtocol.DEBUG) {
+                throwable.printStackTrace();
+            }
         }
     }
 
@@ -78,10 +76,12 @@ public abstract class ServerBase implements IServer {
             return;
         }
 
-        this.channelFuture.channel().close();
+        channelFuture.channel().close();
+        if (Objects.isNull(eventExecutors)) {
+            return;
+        }
 
-        if (Objects.isNull(this.eventExecutors)) return;
-        this.eventExecutors.shutdownNow();
+        eventExecutors.shutdownNow();
     }
 
     /**
@@ -90,56 +90,69 @@ public abstract class ServerBase implements IServer {
     public final void run(final int port, final SessionListener sessionListener) {
         Thread.currentThread().setName("Server Thread");
 
-        this.channelFuture = new ServerBootstrap()
-                .channel((this.eventExecutors instanceof EpollEventLoopGroup) ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
-                .group(this.eventExecutors)
+        channelFuture = new ServerBootstrap()
+                .channel((eventExecutors instanceof EpollEventLoopGroup) ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                .group(eventExecutors)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(final SocketChannel socketChannel) {
                         final ChannelPipeline pipeline = socketChannel.pipeline();
-
                         pipeline.addLast("timer", new ReadTimeoutHandler(30));
                         pipeline.addLast(IOPipelineName.FRAME_CODEC, new NettyVarInt21FrameCodec());
                         pipeline.addLast(IOPipelineName.PACKET_CODEC, new NettyPacketCodec(PacketDirection.SERVERBOUND, packetRegistry, ConnectionState.HANDSHAKE));
-
                         pipeline.addLast("handler", new SimpleChannelInboundHandler<Packet>() {
 
                             private Session session;
 
                             @Override
-                            public void channelActive(ChannelHandlerContext ctx) throws Exception {
+                            public void channelActive(ChannelHandlerContext ctx) {
                                 session = new Session(ctx.channel());
                                 sessionList.add(session);
-                                if (Objects.nonNull(sessionListener)) sessionListener.connected(session);
+                                if (Objects.isNull(sessionListener)) {
+                                    return;
+                                }
+
+                                sessionListener.connected(session);
                             }
 
                             @Override
-                            public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                            public void channelInactive(ChannelHandlerContext ctx) {
+                                if (Objects.nonNull(sessionListener)) {
+                                    sessionListener.disconnected(session);
+                                }
+
                                 sessionList.remove(session);
-                                if (Objects.nonNull(sessionListener)) sessionListener.disconnected(session);
                             }
 
                             @Override
-                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) throws Exception {
-                                if (Objects.nonNull(sessionListener)) sessionListener.onPacketReceived(session, packet);
+                            protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet packet) {
+                                if (Objects.isNull(sessionListener)) {
+                                    return;
+                                }
+
+                                sessionListener.onPacketReceived(session, packet);
                             }
 
                             @Override
-                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                if (Objects.nonNull(sessionListener)) sessionListener.exceptionCaught(session, cause);
+                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+                                if (Objects.isNull(sessionListener)) {
+                                    return;
+                                }
+
+                                sessionListener.exceptionCaught(session, cause);
                             }
                         });
                     }
                 }).bind(port).addListener((ChannelFutureListener) channelFuture -> {
                     if (channelFuture.isSuccess()) {
-                        LogUtil.log(this.getClass(), "Server is now running on %s", channelFuture.channel().localAddress());
+                        LogUtil.log(this.getClass(), "Server is now running on " + channelFuture.channel().localAddress());
                     } else {
                         LogUtil.err(this.getClass(), "Server failed to start!");
                     }
 
-                    this.countDownLatch.countDown();
+                    countDownLatch.countDown();
                 });
     }
 }

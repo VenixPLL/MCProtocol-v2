@@ -5,7 +5,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Objects;
@@ -35,7 +34,6 @@ public final class HttpUtil {
             httpPost.addHeader("content-type", "application/json; utf-8");
             httpPost.setEntity(new StringEntity(content));
             httpClient.execute(httpPost);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 }

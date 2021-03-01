@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class ItemStack {
@@ -34,5 +36,14 @@ public class ItemStack {
         this.amount = amount;
         this.data = data;
         this.nbt = nbt;
+    }
+
+    public ItemStack copy() {
+        var itemStack = new ItemStack(id, amount, data);
+        if (Objects.nonNull(nbt)) {
+            itemStack.setNbt((NBTTagCompound) nbt.copy());
+        }
+
+        return itemStack;
     }
 }

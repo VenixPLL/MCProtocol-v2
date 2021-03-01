@@ -34,9 +34,9 @@ public abstract class SessionListener {
      * Exception event fired on any exception within Netty itself, on force close, timeout etc.
      *
      * @param session Session on which the event was fired
-     * @param t       Throwable thrown
+     * @param throwable       Throwable thrown
      */
-    public void exceptionCaught(final Session session, final Throwable t) {
+    public void exceptionCaught(final Session session, final Throwable throwable) {
     }
 
 }

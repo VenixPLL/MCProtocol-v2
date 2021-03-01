@@ -46,18 +46,18 @@ public class mainTest {
         server.setSessionListener(new SessionListener() {
             @Override
             public void connected(Session session) {
-                LogUtil.log(this.getClass(), "%s Connected", session.getChannel().remoteAddress().toString());
+                LogUtil.log("%s Connected", session.getChannel().remoteAddress().toString());
                 session.enableViaVersion(false);
             }
 
             @Override
             public void disconnected(Session session) {
-                LogUtil.log(this.getClass(), "%s Disconnected", session.getChannel().remoteAddress().toString());
+                LogUtil.log("%s Disconnected", session.getChannel().remoteAddress().toString());
             }
 
             @Override
             public void onPacketReceived(Session session, Packet packet) {
-                LogUtil.log(this.getClass(), "%s Received %s", session.getChannel().remoteAddress().toString(), packet.getClass().getSimpleName());
+                System.out.println(session.getChannel().localAddress().toString() + " " + packet.getClass().getSimpleName());
                 if (packet instanceof HandshakePacket) {
                     session.setConnectionState(ConnectionState.valueOf(((HandshakePacket) packet).getNextState()));
                 } else if (packet instanceof ClientStatusRequestPacket) {

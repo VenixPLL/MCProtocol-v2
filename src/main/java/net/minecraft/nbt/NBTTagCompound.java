@@ -81,7 +81,7 @@ public class NBTTagCompound extends NBTBase {
     /**
      * Gets a set with the names of the keys in the tag compound.
      */
-    public Set getKeySet() {
+    public Set<String> getKeySet() {
         return this.tagMap.keySet();
     }
 

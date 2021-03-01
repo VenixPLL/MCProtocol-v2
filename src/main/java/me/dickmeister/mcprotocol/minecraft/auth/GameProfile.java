@@ -10,13 +10,19 @@ import java.util.UUID;
 /**
  * Skidded from Minecraft Client
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class GameProfile {
 
+    private final PropertyMap properties = new PropertyMap();
+
     private String username;
     private UUID uuid;
 
-    private final PropertyMap properties = new PropertyMap();
+    public GameProfile(String userName) {
+        this.username = userName;
+        this.uuid = null;
+    }
 }

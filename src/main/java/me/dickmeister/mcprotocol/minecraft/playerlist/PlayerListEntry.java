@@ -5,7 +5,6 @@ import me.dickmeister.mcprotocol.minecraft.Gamemode;
 import me.dickmeister.mcprotocol.minecraft.auth.GameProfile;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-
 import java.util.Objects;
 
 @Data
@@ -48,7 +47,6 @@ public class PlayerListEntry {
                 : displayName.length > 0 ? displayName[0].toPlainText()
                 : null
         );
-
     }
 
     public String getDisplayAsJson() {

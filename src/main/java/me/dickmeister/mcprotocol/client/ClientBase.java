@@ -103,7 +103,7 @@ public abstract class ClientBase implements IClient {
                     }
                 });
 
-        bootstrap.connect(host, port).syncUninterruptibly().channel();
+        bootstrap.connect(host, port).syncUninterruptibly();
     }
 
     /**

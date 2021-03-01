@@ -3,7 +3,6 @@ package me.dickmeister.mcprotocol.network.packet.impl.login.server;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import me.dickmeister.mcprotocol.network.ConnectionState;
 import me.dickmeister.mcprotocol.network.PacketDirection;
 import me.dickmeister.mcprotocol.network.netty.PacketBuffer;
@@ -24,7 +23,7 @@ public class ServerLoginDisconnectPacket extends Packet {
         this.setId(0x00);
     }
 
-    public ServerLoginDisconnectPacket(@NonNull final String message) {
+    public ServerLoginDisconnectPacket(final String message) {
         reason = new BaseComponent[]{new TextComponent(message)};
     }
 

@@ -16,7 +16,10 @@ import me.dickmeister.mcprotocol.network.netty.codec.NettyPacketCodec;
 import me.dickmeister.mcprotocol.network.netty.encryption.CryptManager;
 import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.login.server.ServerLoginDisconnectPacket;
+import me.dickmeister.mcprotocol.network.packet.impl.play.client.ClientChatPacket;
+import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerChatPacket;
 import me.dickmeister.mcprotocol.network.packet.impl.play.server.ServerDisconnectPacket;
+import me.dickmeister.mcprotocol.util.StringUtil;
 import me.dickmeister.viaversion.IOPipelineName;
 import me.dickmeister.viaversion.ViaClient;
 import me.dickmeister.viaversion.managers.ViaHostnameProtocol;
@@ -45,12 +48,14 @@ public class Session {
 
     private final Channel channel;
     private ViaClient client;
+    private String nickName;
+    private UserConnection info;
 
     /**
      * Changing compression threshold or enabling compression if not enabled.
      * Wihout changing CompressionThreshold you cannot "Play" on Servers with enabled compression
      * <p>
-     * When enabling compression on Client the server will send ServerLoginSetCompressionPacket with on threshold.
+     * When enabling compression on Client the server will send ServerLoginSetCompressionPacket with threshold.
      * When enabling compression on Server you have to send ServerLoginSetCompressionPacket to target Session *(In LOGIN ConnectionState)
      *
      * @param threshold Maximum size of a packet before it is compressed.
@@ -73,36 +78,35 @@ public class Session {
     }
 
     /**
-     * Enabling viaVersion multiProtocol and crossversion support;
+     * Enabling ViaVersion multiProtocol and crossversion support;
      * Permanent for Session.
      *
      * @param clientSide Direction of the Session.
      */
-    public final void enableViaVersion(final boolean clientSide) {
-
+    public void enableViaVersion(final boolean clientSide) {
         if (!MCProtocol.VIA_ENABLED) {
-            throw new IllegalStateException("ViaVersion was not initialized! Enable ViaVersion in McProtocol.initialize");
+            throw new IllegalStateException("ViaVersion was not initialized! Enable ViaVersion using McProtocol.initialize");
         }
 
         if (clientSide) {
-            final UserConnection user = new VRClientSideUserConnection(this.channel);
+            final UserConnection userConnection = new VRClientSideUserConnection(this.channel);
 
             if (this.client == null) {
-                client = new ViaClient(user.getId());
+                client = new ViaClient(userConnection.getId());
                 client.initFabric();
             } else {
-                client.updateID(user.getId());
+                client.updateID(userConnection.getId());
             }
 
-            new ProtocolPipeline(user).add(ViaHostnameProtocol.INSTANCE);
+            new ProtocolPipeline(userConnection).add(ViaHostnameProtocol.INSTANCE);
             this.channel.pipeline()
-                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_ENCODER_NAME, new IOViaEncode(user))
-                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaDecode(user));
+                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_ENCODER_NAME, new IOViaEncode(userConnection))
+                    .addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaDecode(userConnection));
 
             return;
         }
 
-        final UserConnection info = new UserConnection(this.channel, false);
+        info = new UserConnection(this.channel, false);
         new ProtocolPipeline(info);
         this.channel.pipeline().addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_ENCODER_NAME, new IOViaServerEncode(info));
         this.channel.pipeline().addBefore(IOPipelineName.PACKET_CODEC, IOPipelineName.VIA_HANDLER_DECODER_NAME, new IOViaServerDecode(info));
@@ -152,7 +156,8 @@ public class Session {
      * Sending a packet to target Session
      * <p>
      * Session can be a Player or a Server
-     * Ex: Client has a Session representation so Packets will flow like Session -> Server
+     * <p>
+     * Ex: Client has a Session representation so Packets will flow like Session -> Server<p>
      * Ex: Server has a Session representation so Packets will flow like Session -> Player
      *
      * @param packet Packet to send
@@ -162,7 +167,7 @@ public class Session {
     }
 
     /**
-     * Raw data send through Channel, bypassing all Netty Codecs
+     * Raw data send through Channel, bypassing all Netty Codecs except framing(sizer)
      *
      * @param buffer        Buffer with data to send
      * @param currentThread Thread to send if false it will send data with Channel eventLoop
@@ -183,7 +188,7 @@ public class Session {
      *
      * @param reason Reason why client was disconnected. Leave blank if no reason
      */
-    public final void disconnect(final String reason) {
+    public void disconnect(String reason) {
         if (this.getPacketDirection() == PacketDirection.CLIENTBOUND)
             throw new IllegalStateException("Cannot send disconnect packet to Server. try close()");
 
@@ -194,18 +199,33 @@ public class Session {
             case PLAY:
                 sendPacket(new ServerDisconnectPacket(reason));
                 break;
-
             default:
                 close();
         }
     }
 
     /**
-     * Raw channel closing wihout any packets or information
+     * Disconnecting Session without reason. only works if PacketDirection encoded in PacketCodec is SERVERBOUND
      */
-    public final void close() {
-        if (this.channel.isActive()) this.channel.close();
+    public void disconnect() {
+        this.disconnect("");
     }
 
+    public void sendMessage(String message) {
+        if (this.getPacketDirection() == PacketDirection.CLIENTBOUND) {
+            sendPacket(new ClientChatPacket(message));
+            return;
+        }
 
+        sendPacket(new ServerChatPacket(StringUtil.fixColor(message))); // ChatUtil?
+    }
+
+    /**
+     * Raw channel closing wihout any packets or information
+     */
+    public void close() {
+        if (channel.isActive()) {
+            channel.close();
+        }
+    }
 }

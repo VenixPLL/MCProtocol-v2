@@ -9,6 +9,7 @@ import me.dickmeister.mcprotocol.network.packet.impl.handshake.HandshakePacket;
 import me.dickmeister.mcprotocol.network.packet.impl.login.client.ClientLoginStartPacket;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.server.impl.MinecraftServer;
+import us.myles.ViaVersion.api.Via;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;

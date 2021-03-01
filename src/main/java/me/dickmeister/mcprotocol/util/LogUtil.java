@@ -2,24 +2,26 @@ package me.dickmeister.mcprotocol.util;
 
 public final class LogUtil {
 
-
-    public static final void log(final Class c, final String message, final Object... args) {
-        System.out.println("[" + c.getSimpleName() + "] " + format(message, args));
+    public LogUtil() {
     }
 
-    public static final void err(final Class c, final String message, final Object... args) {
-        System.err.println("[" + c.getSimpleName() + "] " + format(message, args));
+    public static void log(Class<?> clazz, String message, Object... obj) {
+        log("[%s] " + message, clazz.getSimpleName(), obj);
     }
 
-    public static final void log(final String message, final Object... args) {
-        System.out.println(format(message, args));
+    public static void err(Class<?> clazz, String message, Object... obj) {
+        err("[%s] " + message, clazz.getSimpleName(), obj);
     }
 
-    public static final void err(final String message, final Object... args) {
-        System.err.println(format(message, args));
+    public static void log(String message, Object... obj) {
+        System.out.printf((message) + "%n", obj);
     }
 
-    private static final String format(final String m, final Object... a) {
-        return String.format(m, a);
+    public static void err(String message, Object... obj) {
+        System.err.printf((message) + "%n", obj);
+    }
+
+    public static String format(String in, Object... obj) {
+        return String.format(in,obj);
     }
 }

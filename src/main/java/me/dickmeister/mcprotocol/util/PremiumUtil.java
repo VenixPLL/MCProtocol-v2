@@ -35,7 +35,7 @@ public class PremiumUtil {
      * @param proxy       Proxy to make request through
      * @return Returns request state. if true the request was sent successfully, if false some error occurred (Enable DEBUG)
      */
-    public static final boolean parseEncryption(final Session session, final ServerLoginEncryptionRequestPacket packet,
+    public static boolean parseEncryption(final Session session, final ServerLoginEncryptionRequestPacket packet,
                                                 final String accessToken, final UUID uuid, final Proxy proxy) {
         try {
             final SecretKey secretkey = CryptManager.createNewSharedKey();
@@ -57,11 +57,11 @@ public class PremiumUtil {
         }
     }
 
-    public static final void parseEncryption(final ClientLoginEncryptionResponsePacket encryptionResponsePacket) {
+    public static void parseEncryption(final ClientLoginEncryptionResponsePacket encryptionResponsePacket) {
         //TODO
     }
 
-    public static final PremiumSession makeSession(final String login, final String password) {
+    public static PremiumSession makeSession(final String login, final String password) {
         return new PremiumSession(login, password);
     }
 
@@ -134,5 +134,4 @@ public class PremiumUtil {
         }
 
     }
-
 }

@@ -15,8 +15,8 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 import me.dickmeister.mcprotocol.network.packet.impl.CustomPacket;
 import me.dickmeister.mcprotocol.network.packet.registry.PacketRegistry;
 import me.dickmeister.mcprotocol.network.security.CodecSecurity;
-
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -32,7 +32,6 @@ public class NettyPacketCodec extends ByteToMessageCodec<Packet> {
      */
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Packet packet, ByteBuf byteBuf) {
-
         final PacketBuffer buffer = new PacketBuffer(byteBuf);
 
         try {
@@ -41,7 +40,6 @@ public class NettyPacketCodec extends ByteToMessageCodec<Packet> {
         } catch (final Throwable t) {
             throw new EncoderException("Failed to encode packet - " + packet.getClass().getSimpleName() + " ID: " + packet.getId());
         }
-
     }
 
     /**
@@ -51,21 +49,20 @@ public class NettyPacketCodec extends ByteToMessageCodec<Packet> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List out) {
         if (byteBuf.isReadable()) {
-
-            if (!ctx.channel().isActive()) return;
+            if (!ctx.channel().isActive()) {
+                return;
+            }
 
             final PacketBuffer buffer = new PacketBuffer(byteBuf);
-
             try {
                 final int id = buffer.readVarIntFromBuffer();
-
                 if (id < 0 || id > 255) {
                     this.throwConnection(ctx, CodecSecurity.ErrorType.BAD_PACKET_ID);
                     return;
                 }
 
-                Packet packet = null;
-                if ((packet = packetRegistry.getPacket(id, connectionState, packetDirection)) == null) {
+                Packet packet;
+                if (Objects.isNull(packet = packetRegistry.getPacket(id, connectionState, packetDirection))) {
                     packet = new CustomPacket();
                     packet.setId(id);
                 }
@@ -79,24 +76,23 @@ public class NettyPacketCodec extends ByteToMessageCodec<Packet> {
                 }
 
                 if (buffer.isReadable()) {
+                    System.out.println("ID: " + id + " recognized as " + packet.getClass().getSimpleName());
                     this.throwConnection(ctx, CodecSecurity.ErrorType.PACKET_TOO_BIG);
                     packet = null;
                     return;
                 }
 
                 out.add(packet);
-
             } catch (final Throwable t) {
                 this.throwConnection(ctx, CodecSecurity.ErrorType.UNKNOWN_ERROR);
             }
         }
-
     }
 
     /**
      * Security against NullPing and Handshake Spam Attacks.
      */
-    private final void throwConnection(final ChannelHandlerContext ctx, final CodecSecurity.ErrorType type) {
+    private void throwConnection(final ChannelHandlerContext ctx, final CodecSecurity.ErrorType type) {
         MCProtocol.codecSecurity.throwConnection(ctx.channel(), type);
     }
 }

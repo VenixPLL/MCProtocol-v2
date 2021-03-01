@@ -7,8 +7,11 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
+import me.dickmeister.mcprotocol.minecraft.BlockPos;
 import me.dickmeister.mcprotocol.minecraft.item.ItemStack;
 import me.dickmeister.mcprotocol.minecraft.world.vec.Position;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
@@ -41,6 +44,23 @@ public class PacketBuffer extends ByteBuf {
         }
 
         return 5;
+    }
+
+    public BlockPos readBlockPos() {
+        return BlockPos.fromLong(this.readLong());
+    }
+
+    public PacketBuffer writeBlockPos(BlockPos pos) {
+        this.writeLong(pos.toLong());
+        return this;
+    }
+
+    public TextComponent readTextComponent() {
+        return new TextComponent(ComponentSerializer.parse(this.readStringFromBuffer(32767)));
+    }
+
+    public PacketBuffer writeTextComponent(TextComponent component) {
+        return this.writeString(ComponentSerializer.toString(component));
     }
 
     /**

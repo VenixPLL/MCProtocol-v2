@@ -12,7 +12,7 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Packet.PacketInfo(connectionState = ConnectionState.PLAY,packetDirection = PacketDirection.SERVERBOUND)
+@Packet.PacketInfo(connectionState = ConnectionState.PLAY, packetDirection = PacketDirection.SERVERBOUND)
 public class ClientPlayerPositionPacket extends Packet
 {
     {

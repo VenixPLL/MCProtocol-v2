@@ -10,8 +10,7 @@ public final class CodecSecurity {
      */
     public final void throwConnection(final Channel channel, final ErrorType errorType) {
         channel.close();
-        SimpleErrorReporting a = new SimpleErrorReporting().header("Failed to read packet", "Reason: " + errorType.name()).print();
-        a = null;
+        new SimpleErrorReporting().header("Failed to read packet", "Reason: " + errorType.name()).print();
     }
 
     /**

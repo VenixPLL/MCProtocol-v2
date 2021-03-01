@@ -19,7 +19,6 @@ public class MinecraftServer extends ServerBase {
         super(packetRegistry);
     }
 
-
     @Override
     public void bind(int port, final SessionListener listener) {
         this.sessionListener = listener;
@@ -31,5 +30,4 @@ public class MinecraftServer extends ServerBase {
     public void close(boolean fast) {
         super.close(fast);
     }
-
 }

@@ -1,10 +1,11 @@
 package me.dickmeister.mcprotocol.network.packet.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import me.dickmeister.mcprotocol.network.netty.PacketBuffer;
 import me.dickmeister.mcprotocol.network.packet.Packet;
-
 
 /**
  * Class designed to replace not implemented Packets.
@@ -13,6 +14,8 @@ import me.dickmeister.mcprotocol.network.packet.Packet;
 @NoArgsConstructor
 public class CustomPacket extends Packet {
 
+    @Setter
+    @Getter
     private byte[] data;
 
     @Override
