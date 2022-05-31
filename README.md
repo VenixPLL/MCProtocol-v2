@@ -15,3 +15,5 @@
 - BungeeCord ChatAPI -> [ChatAPI](https://github.com/SpigotMC/BungeeCord/tree/master/chat)
 - Minecraft Client NBT **(Used MCP)**
 - OpenMCAuthenticator [OpenMCAuthenticator](https://github.com/chris54721/OpenMCAuthenticator)
+
+https://github.com/negative-zer0 - Wrote a lot of code in Arion (Latest commit)
